@@ -1,0 +1,76 @@
+heat_template_version: 2013-05-23
+
+description: Simple template to deploy a small cluster 
+
+parameters:
+  head_node_image:
+    type: string
+    label: Image name or ID
+    description: Image to be used for compute instance
+    default: cirros-0.3.3-x86_64
+  compute_node_image:
+    type: string
+    label: Image name or ID
+    description: Image to be used for compute instance
+    default: cirros-0.3.3-x86_64
+  flavor:
+    type: string
+    label: Flavor
+    description: Type of instance (flavor) to be used
+    default: m1.small
+  key:
+    type: string
+    label: Key name
+    description: Name of key-pair to be used for compute instance
+    default: my_key
+  private_network:
+    type: string
+    label: Private network name or ID
+    description: Network to attach instance to.
+    default: private-net
+
+resources:
+  head_node:
+    type: OS::Nova::Server
+    properties:
+      name: headnode
+      image: { get_param: head_node_image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key }
+      networks:
+        - network: { get_param: private_network }
+
+  compute_node_01:
+    type: OS::Nova::Server
+    properties:
+      name: computenode01
+      image: { get_param: compute_node_image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key }
+      networks:
+        - network: { get_param: private_network }
+
+  compute_node_02:
+    type: OS::Nova::Server
+    properties:
+      name: computenode02
+      image: { get_param: compute_node_image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key }
+      networks:
+        - network: { get_param: private_network }
+
+
+outputs:
+  head_node_ip:
+    description: IP address of the instance
+    value: { get_attr: [head_node, first_address] }
+ 
+  compute_node_01_ip:
+    description: IP address of the instance
+    value: { get_attr: [compute_node_01, first_address] }
+
+  compute_node_02_ip:
+    description: IP address of the instance
+    value: { get_attr: [compute_node_02, first_address] }
+

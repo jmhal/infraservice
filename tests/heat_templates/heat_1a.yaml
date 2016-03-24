@@ -1,0 +1,13 @@
+heat_template_version: 2013-05-23
+
+description: Simple template to deploy a single head node instance
+
+resources:
+  head_node:
+    type: OS::Nova::Server
+    properties:
+      image: clusterSLURMHeadNode 
+      flavor: shelf.medium
+      key_name: joaoalencar
+      networks:
+        - network: demo-net
