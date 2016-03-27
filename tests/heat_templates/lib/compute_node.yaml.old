@@ -36,16 +36,6 @@ parameters:
     default: 0.0.0.0
 
 resources:
-  wait_condition:
-    type: OS::Heat::WaitCondition
-    properties:
-      handle: { get_resource: wh }
-      count: 1
-      timeout: 600
-
-  wh:
-    type: OS::Heat::WaitConditionHandle
-
   compute_node_instance:
     type: OS::Nova::Server
     properties:
@@ -54,60 +44,19 @@ resources:
       key_name: { get_param: key }
       networks:
         - network: { get_param: private_network }
-      user_data_format: RAW
       user_data: 
          str_replace:
             params:
                __headnodename__: { get_param: head_node_name }
                __headnodeip__: { get_param: head_node_ip }
-               wc_notify: { get_attr: ['wh', 'curl_cli'] }
             template: |
               #!/bin/bash -ex
               # Installing packages
               apt-get update
-              apt-get install -y openmpi-bin libopenmpi-dev openmpi-common portmap nfs-common
-  
+              apt-get install -y openmpi-bin libopenmpi-dev openmpi-common
               # Update /etc/hosts
               echo "__headnodeip__" "__headnodename__" >> /etc/hosts
-  
-              # Send informatio about hostname, ip, and flavor to head node
-              cat >>/compute_node_client.py <<EOF
-              import socket
-              import sys
-              import subprocess
-              import time
-
-              HOST = str(sys.argv[1])
-              PORT = 5555
-
-              proc = subprocess.Popen('hostname', stdout=subprocess.PIPE)
-              hostname = proc.stdout.read().strip()
-
-              proc = subprocess.Popen('cat /proc/cpuinfo | grep processor | wc -l', shell=True, stdout=subprocess.PIPE)
-              cpu = proc.stdout.read().strip()
-              
-              tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-              dest = (HOST, PORT)
-
-              result = 1
-              while (result != 0):
-                 result = tcp.connect_ex(dest)
-                 if (result != 0) :
-                    print "waiting for server..."
-                    time.sleep(5)
-
-              tcp.send(hostname+ ":" + cpu)
-              tcp.close()
-              EOF
-              
-              python /compute_node_client.py __headnodeip__
-
-              # Mount NFS share
-              mount -t nfs __headnodeip__:/home /home
-              echo "__headnodeip__:/home /home nfs auto,noatime,nolock,bg,nfsvers=3,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
-  
-              # notify heat that we are done here
-              wc_notify --data-binary '{"status": "SUCCESS"}'
+      user_data_format: RAW
 
 outputs:
   compute_node_instance_ip:

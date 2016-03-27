@@ -24,8 +24,39 @@ parameters:
     label: Private network name or ID
     description: Network to attach instance to.
     default: private-net
+  cluster_size:
+    type: string
+    label: Size of the cluster
+    description: Size of the cluster to be created.
+    default: 1
 
 resources:
+  wait_handle:
+    type: OS::Heat::WaitConditionHandle
+
+  wait_condition:
+    type: OS::Heat::WaitCondition
+    properties:
+      handle: { get_resource: wait_handle }
+      count: 1
+      timeout: 600
+
+  security_group:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: cluster_security_group
+      rules:
+        - protocol: tcp
+          port_range_min: 0
+          port_range_max: 60000     
+
+  port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: private_network }
+      security_groups:
+        - { get_resource: security_group }
+
   head_node_instance:
     type: OS::Nova::Server
     properties:
@@ -33,13 +64,85 @@ resources:
       flavor: { get_param: flavor }
       key_name: { get_param: key }
       networks:
-        - network: { get_param: private_network }
-      user_data: |
-         #!/bin/bash -ex
-         # Installing packages
-         apt-get update
-         apt-get install -y openmpi-bin libopenmpi-dev openmpi-common  
+        - port: { get_resource: port }
       user_data_format: RAW
+      user_data: 
+         str_replace:
+            params: 
+               __cluster_size__: { get_param: cluster_size }
+               wc_notify: { get_attr: ['wait_handle', 'curl_cli'] }  
+            template: |
+               #!/bin/bash -ex
+               # Installing packages
+               apt-get update
+               apt-get install -y openmpi-bin libopenmpi-dev openmpi-common portmap nfs-kernel-server 
+   
+               # Configure NFS Server
+               network=`ip route | grep -v default | grep eth0 | cut -f 1 -d " "`
+               echo "/home $network(rw,sync,no_subtree_check)" >> /etc/exports
+               exportfs -a
+               /etc/init.d/nfs-kernel-server restart
+   
+               # Create ssh key
+               ssh-keygen -f key.rsa -t rsa -N ''
+               mkdir -p /home/ubuntu/.ssh
+               mv key.rsa /home/ubuntu/.ssh/id_rsa
+               mv key.rsa.pub /home/ubuntu/.ssh/id_rsa.pub
+               chmod 0600 /home/ubuntu/.ssh/id_rsa
+               chmod 0611 /home/ubuntu/.ssh/id_rsa.pub
+               cat /home/ubuntu/.ssh/id_rsa.pub >> /home/ubuntu/.ssh/authorized_keys
+               chown -R ubuntu.ubuntu /home/ubuntu/.ssh
+ 
+               # Disable ssh know_hosts warnings
+               echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+               echo "UserKnownHostsFile=/dev/null" >> /etc/ssh/ssh_config 
+
+               # Configure /etc/hosts and /etc/openmpi/openmpi-default-hostfile
+               cat >>/head_node_server.py <<EOF
+               import socket
+               import threading
+               import sys
+   
+               count = int(sys.argv[1])
+               HOST = ''
+               PORT = 5555
+   
+               def connection(con, client):
+                  hostnamecpu = con.recv(1024)
+                  hostname = hostnamecpu.strip().split(':')[0]
+                  cpu = hostnamecpu.strip().split(':')[1]
+   
+                  ip = client[0].strip()
+   
+                  f = open("/etc/hosts","a")
+                  f.write(ip + " " + hostname + "\n")
+                  f.close()
+   
+                  f = open("/etc/openmpi/openmpi-default-hostfile","a")
+                  f.write(ip + " slots=" + cpu + "\n")
+                  f.close()
+   
+                  con.close()
+   
+               tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+               orig = (HOST, PORT)
+   
+               tcp.bind(orig)
+               tcp.listen(1)
+   
+               for i in range(count):
+                  con, client = tcp.accept()
+                  t = threading.Thread(target=connection, args=(con, client))
+                  t.start()
+   
+               t.join()
+               tcp.close()
+               EOF
+               
+               nohup python ./head_node_server.py __cluster_size__ &
+
+               # notify heat that we are done here
+               wc_notify --data-binary '{"status": "SUCCESS"}'
 
 outputs:
   head_node_instance_ip:
@@ -50,3 +153,6 @@ outputs:
     description: Name of the instance
     value: { get_attr: [head_node_instance, name] }
  
+  head_node_instance_port:
+    description: The network port of the head node instance.
+    value: { get_resource: port }

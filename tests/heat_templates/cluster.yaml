@@ -19,44 +19,53 @@ parameters:
     label: Key name
     description: Name of key-pair to be used for compute instance
     default: my_key
-  private_network:
+  public_network:
     type: string
     label: Private network name or ID
     description: Network to attach instance to.
     default: private-net
+  cluster_size:
+    type: number
+    label: Cluster size
+    description: Number of compute node instances in cluster
+    default: 1
 
 resources:
+  network:
+    type: lib/private_network.yaml
+    properties:
+      public_network: { get_param: public_network }
+
   head_node:
     type: lib/head_node.yaml 
     properties:
       image: { get_param: image }
       flavor: { get_param: flavor }
       key: { get_param: key }
-      private_network: { get_param: private_network }
+      cluster_size: { get_param: cluster_size }
+      private_network: { get_attr: [network, name] }
 
-  compute_node:
-    type: lib/compute_node.yaml
+  floating_ip:
+    type: lib/floating_ip.yaml
     properties:
-      image: { get_param: image }
-      flavor: { get_param: flavor }
-      key: { get_param: key }
-      private_network: { get_param: private_network }
-      head_node_name: { get_attr: [head_node, head_node_instance_name] }
-      head_node_ip: { get_attr: [head_node, head_node_instance_ip] }
+      port: { get_attr: [head_node, head_node_instance_port] }
+      public_network: { get_param: public_network }
+
+  mpi_cluster: 
+     type: OS::Heat::ResourceGroup
+     properties:
+        count: {get_param: cluster_size}
+        resource_def:
+           type: lib/compute_node.yaml
+           properties:
+              image: { get_param: image }
+              flavor: { get_param: flavor }
+              key: { get_param: key }
+              private_network: { get_attr: [network, name] }
+              head_node_name: { get_attr: [head_node, head_node_instance_name] }
+              head_node_ip: { get_attr: [head_node, head_node_instance_ip] }
  
 outputs:
-  head_node_ip:
-    description: IP address of the instance
-    value: { get_attr: [head_node, first_address] }
-
-  head_node_name:
-    description: Name of the instance
-    value: { get_attr: [head_node, name] }
-
-  compute_node_ip:
-    description: IP address of the instance
-    value: { get_attr: [compute_node, first_address] }
-
-  compute_node_name:
-    description: Name of the instance
-    value: { get_attr: [compute_node, name] }
+  ip:
+    description: The public IP address to access cluster.
+    value: { get_attr: [floating_ip, ip] } 
