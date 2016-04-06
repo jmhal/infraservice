@@ -1,8 +1,0 @@
-unset OS_SERVICE_TOKEN
-export OS_USERNAME=joaoalencar
-export OS_PASSWORD=sagan85
-export OS_AUTH_URL=http://200.19.177.89:5000/v2.0
-export PS1='[\u@\h \W(keystone_admin)]\$ '
-
-export OS_TENANT_NAME=hpcshelf
-export OS_REGION_NAME=RegionOne
