@@ -36,21 +36,25 @@ def create_stack(url, token, tenant_id, stack_name, template_url):
     data = r.json()
     return data['stack']['id']
 
-def create_stack(url, token, tenant_id, stack_name, template_file, files):
-    f = open(template_file, 'r')
-    template = yaml.load(f)
-    f.close()
+def create_stack(url, token, tenant_id, stack_name, template, files, params):
     headers = {'X-Auth-Token': token}
-    payload = {'tenant_id' : tenant_id, 'stack_name' : stack_name,
-               'template' : json.dumps(template),
-               'files' : '',
-               'parameters' : {'image' : 'Ubuntu1404', 'flavor' : 'shelf.medium',
-               'key' : 'joaoalencar', 'private_network' : 'demo-net'}}
+    payload = {'tenant_id' : tenant_id,
+               'stack_name' : stack_name,
+               'template' : template,
+               'files' : files,
+               'parameters' : params}
+    #print json.dumps(payload)
     r = requests.post(url, data = json.dumps(payload), headers = headers)
     print r.status_code
     print r.text
     data = r.json()
     return data['stack']['id']
+
+def load_template_from_file(template_file):
+    f = open(template_file, "r")
+    content = yaml.load(f)
+    f.close()
+    return str(content)
 
 username = env['OS_USERNAME']
 password = env['OS_PASSWORD']
@@ -64,6 +68,17 @@ heat_base_url = "http://" + base_url + ":8004/v1"
 
 # template_url = "https://raw.githubusercontent.com/jmhal/infraservice/master/tests/heat_templates/heat_2a.yaml"
 # create_stack(heat_base_url + "/" + tenant_id + "/stacks", token, tenant_id, "teste_api", template_url=template_url)
-template_file = "/home/jmhal/repositorios/infraservice/tests/heat_templates/heat_2a.yaml"
-files = {''}
-create_stack(heat_base_url + "/" + tenant_id + "/stacks", token, tenant_id, "teste_api_do_arquivo", template_file=template_file)
+template = load_template_from_file("/home/jmhal/repositorios/infraservice/tests/heat_templates/cluster.yaml")
+lib_dir = "/home/jmhal/repositorios/infraservice/tests/heat_templates/lib"
+files = {}
+for template_file in os.listdir(lib_dir):
+    files["lib/" + template_file] = load_template_from_file(lib_dir + "/" + template_file)
+
+params = {}
+params['image'] = 'Ubuntu1404'
+params['flavor'] = 'shelf.medium'
+params['key'] = 'joaoalencar'
+params['public_network'] = 'ext-net'
+params['cluster_size'] = '4'
+
+create_stack(heat_base_url + "/" + tenant_id + "/stacks", token, tenant_id, "teste_api_dos_arquivos", template, files, params)
