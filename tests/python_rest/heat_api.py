@@ -8,20 +8,7 @@ import yaml
 from os import environ as env
 from os import path as path
 
-from heatclient.common import template_format
 from heatclient.common import template_utils
-
-def get_fields(tenant_id, stack_name, template_file, params):
-    tpl_files, template = template_utils.get_template_contents(template_file = template_file)
-    fields = {
-        'tenant_id' : tenant_id,
-        'stack_name': stack_name,
-        'parameters': params,
-        'template': template,
-        'files': dict(list(tpl_files.items())),
-    }
-    return fields
-
 
 def get_auth_token(url, tenant, username, password):
    headers = {'Content-Type':'application/json'}
@@ -38,75 +25,42 @@ def get_tenant_id(url, token, tenant):
       if element['name'] == tenant:
           return element['id']
 
-def create_stack(url, token, tenant_id, stack_name, template_url):
-    headers = {'X-Auth-Token': token}
-    payload = {'tenant_id' : tenant_id, 'stack_name' : stack_name, 'template_url' : template_url,
-               'parameters' : {'image' : 'Ubuntu1404', 'flavor' : 'shelf.medium',
-               'key' : 'joaoalencar', 'private_network' : 'demo-net'}}
-    r = requests.post(url, data = json.dumps(payload), headers = headers)
-    print r.text
-    data = r.json()
-    return data['stack']['id']
+def get_fields(tenant_id, stack_name, template_file, params):
+    tpl_files, template = template_utils.get_template_contents(template_file = template_file)
+    fields = {
+        'tenant_id' : tenant_id,
+        'stack_name': stack_name,
+        'parameters': params,
+        'template': template,
+        'files': dict(list(tpl_files.items())),
+    }
+    return fields
 
-def create_stack(url, token, tenant_id, stack_name, template, files, params):
+def create_stack(token, tenant_id, heat_base_url, stack_name, template_file, params):
     headers = {'X-Auth-Token': token}
-    #payload = {'tenant_id' : tenant_id,
-    #           'stack_name' : stack_name,
-    #           'template' : template,
-    #           'files' : files,
-    #           'parameters' : params}
-    #print json.dumps(payload)
-    r = requests.post(url, data = json.dumps(payload), headers = headers)
+    fields = get_fields(tenant_id, stack_name, template_file, params)
+    r = requests.post(heat_base_url + "/" + tenant_id + "/stacks", data = json.dumps(fields), headers = headers)
     print r.status_code
     print r.text
     data = r.json()
+    print data['stack']['id']
     return data['stack']['id']
-
-def load_template_from_file_to_string(template_file):
-    f = open(template_file, "r")
-    content = yaml.load(f)
-    f.close()
-    return str(content)
-
-def load_template_from_file_to_json(template_file):
-    f = open(template_file, "r")
-    content = yaml.load(f)
-    f.close()
-    return content
 
 username = env['OS_USERNAME']
 password = env['OS_PASSWORD']
 tenant_name = env['OS_TENANT_NAME']
-
 token = get_auth_token(env['OS_AUTH_URL'] + "/tokens", tenant_name, username, password)
 tenant_id = get_tenant_id(env['OS_AUTH_URL'] + "/tenants", token, tenant_name)
-
-base_url = env['OS_AUTH_URL'].split(":")[1][2:]
-heat_base_url = "http://" + base_url + ":8004/v1"
-
-# template_url = "https://raw.githubusercontent.com/jmhal/infraservice/master/tests/heat_templates/heat_2a.yaml"
-# create_stack(heat_base_url + "/" + tenant_id + "/stacks", token, tenant_id, "teste_api", template_url=template_url)
-template = load_template_from_file_to_json("/home/jmhal/repositorios/infraservice/tests/heat_templates/cluster_format.yaml")
-#template = load_template_from_file("/home/jmhal/repositorios/infraservice/tests/heat_templates/heat_2a.yaml")
-lib_dir = "/home/jmhal/repositorios/infraservice/tests/heat_templates/lib"
-files = {}
-for template_file in os.listdir(lib_dir):
-    files["file://" + lib_dir + "/" + template_file] = load_template_from_file_to_string(lib_dir + "/" + template_file)
+heat_base_url = "http://" + env['OS_AUTH_URL'].split(":")[1][2:] + ":8004/v1"
 
 params = {}
 params['image'] = 'Ubuntu1404'
 params['flavor'] = 'shelf.medium'
 params['key'] = 'joaoalencar'
-#params['private_network'] = 'demo-net'
 params['public_network'] = 'ext-net'
 params['cluster_size'] = '4'
 
-# create_stack(heat_base_url + "/" + tenant_id + "/stacks", token, tenant_id, "teste_api_dos_arquivos", template, files, params)
-fields = get_fields(tenant_id, "teste", "/home/jmhal/repositorios/infraservice/tests/heat_templates/cluster.yaml", params)
-#print json.dumps(fields)
-headers = {'X-Auth-Token': token}
-r = requests.post(heat_base_url + "/" + tenant_id + "/stacks", data = json.dumps(fields), headers = headers)
-print r.status_code
-print r.text
-data = r.json()
-print data['stack']['id']
+template_file = "/home/jmhal/repositorios/infraservice/tests/heat_templates/cluster.yaml"
+
+create_stack(token = token, tenant_id = tenant_id, heat_base_url = heat_base_url,
+             stack_name="teste", template_file = template_file, params=params)
