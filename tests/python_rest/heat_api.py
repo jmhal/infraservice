@@ -4,16 +4,24 @@ import json
 import requests
 import os
 import yaml
+import time
 
 from os import environ as env
 from os import path as path
 
 from heatclient.common import template_utils
 
-def get_auth_token(url, tenant, username, password):
+def get_auth_token(url, tenant_name, username, password):
    headers = {'Content-Type':'application/json'}
-   payload = {'auth':{'tenantName': tenant, 'passwordCredentials':{ 'username': username, 'password': password}}}
-   r = requests.post(url, data = json.dumps(payload), headers = headers)
+   fields = {
+       'auth':{
+           'tenantName': tenant_name,
+           'passwordCredentials':{
+               'username': username,
+               'password': password}
+            }
+   }
+   r = requests.post(url, data = json.dumps(fields), headers = headers)
    token_id = r.json()['access']['token']['id']
    return token_id
 
@@ -25,7 +33,18 @@ def get_tenant_id(url, token, tenant):
       if element['name'] == tenant:
           return element['id']
 
-def get_fields(tenant_id, stack_name, template_file, params):
+def delete_stack(token, tenant_id, heat_base_url, stack_name, stack_id):
+    headers = {'X-Auth-Token': token}
+    r = requests.delete(heat_base_url + "/" + tenant_id + "/stacks/" + stack_name + "/" + stack_id, headers = headers)
+    return r.status_code
+
+def status_stack(token, tenant_id, heat_base_url, stack_name, stack_id):
+    headers = {'X-Auth-Token': token}
+    r = requests.get(heat_base_url + "/" + tenant_id + "/stacks/" + stack_name + "/" + stack_id, headers = headers)
+    return r.json()
+
+def create_stack(token, tenant_id, heat_base_url, stack_name, template_file, params):
+    headers = {'X-Auth-Token': token}
     tpl_files, template = template_utils.get_template_contents(template_file = template_file)
     fields = {
         'tenant_id' : tenant_id,
@@ -34,16 +53,8 @@ def get_fields(tenant_id, stack_name, template_file, params):
         'template': template,
         'files': dict(list(tpl_files.items())),
     }
-    return fields
-
-def create_stack(token, tenant_id, heat_base_url, stack_name, template_file, params):
-    headers = {'X-Auth-Token': token}
-    fields = get_fields(tenant_id, stack_name, template_file, params)
     r = requests.post(heat_base_url + "/" + tenant_id + "/stacks", data = json.dumps(fields), headers = headers)
-    print r.status_code
-    print r.text
     data = r.json()
-    print data['stack']['id']
     return data['stack']['id']
 
 username = env['OS_USERNAME']
@@ -62,5 +73,20 @@ params['cluster_size'] = '4'
 
 template_file = "/home/jmhal/repositorios/infraservice/tests/heat_templates/cluster.yaml"
 
-create_stack(token = token, tenant_id = tenant_id, heat_base_url = heat_base_url,
+stack_id = create_stack(token = token, tenant_id = tenant_id, heat_base_url = heat_base_url,
              stack_name="teste", template_file = template_file, params=params)
+
+status = status_stack(token = token, tenant_id = tenant_id, heat_base_url = heat_base_url,
+             stack_name = "teste", stack_id = stack_id)
+
+while status['stack']['stack_status'] == "CREATE_IN_PROGRESS":
+    print "Creating stack..."
+    time.sleep(5)
+    status = status_stack(token = token, tenant_id = tenant_id, heat_base_url = heat_base_url,
+                 stack_name = "teste", stack_id = stack_id)
+
+print "You can access the cluster in: " + status['stack']['outputs'][0]['output_value']
+
+
+#delete_stack(token = token, tenant_id = tenant_id , heat_base_url = heat_base_url ,
+#              stack_name = "teste", stack_id = "4cdf1499-e4b4-4d3b-8174-a61eb4aaac83")
