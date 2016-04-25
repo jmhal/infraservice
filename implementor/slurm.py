@@ -9,9 +9,13 @@ import paramiko
 
 class Slurm(InfrastructureImplementor):
     def __init__(self, address, port, user, key):
-        """ Set up SSH access
+        """ Set up SSH access.
         In order to execute SLURM commands, this method initializes the IP address
         of the cluster, the user and the ssh key file.
+        address -- the IP address of the head node
+        port    -- the TCP port for the connection
+        user    -- the username
+        key     -- filename to the credentials for login
         """
         self._address = address
         self._port = port
@@ -33,7 +37,7 @@ class Slurm(InfrastructureImplementor):
         """
         self._ssh.close()
 
-    def parseprofile(self, profile):
+    def parseProfile(self, profile):
         """ Parse profile to params
         Receive the profile description and turn it into params for salloc
         """
