@@ -58,8 +58,9 @@ def deploy_contract(contract):
     Output: An ID for the platform to be created.
     """
     global platforms
-    profileID = extract(contract)
-    platform = infrastructure.create_profile(profileID)
+    profile_id = extract(contract)
+    infrastructure = InfrastructureFactory(profile_files).get_infrastructure()
+    platform = infrastructure.create_platform(profileID)
     platform_id = create_unique_identifier()
     platforms.add_platform(PlatformDeployment(platform, platform_id, "", "BUILDING"))
     return platform_id

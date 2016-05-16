@@ -1,0 +1,28 @@
+infrastructure:
+   profiles:
+      liacloud:
+         id: 0
+         type: "Cloud"
+         properties:
+            type: "OpenStack"
+            properties:
+               credentials: "keystonerc_admin"
+               template: "cluster.yaml"
+               parameters:
+                  image: "Ubuntu1404"
+                  flavor: "hpcshelf.medium"
+                  key: "joaoalencar"
+                  public_network: "ext-net"
+                  cluster_size: "4"
+      cenapadufc:
+         id: 1
+         type: "Cluster"
+         properties:
+            type: "Slurm"
+            properties:
+               user: 'joaoalencar'
+               credentials: "joaoalencar.pem"
+               partition: "long"
+               nodes: "4"
+               ip: "200.19.191.100"
+               port: "22"

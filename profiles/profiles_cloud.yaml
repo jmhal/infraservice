@@ -1,0 +1,23 @@
+infrastructure:
+   type: "Cloud"
+   profile_type: "OpenStack"
+   properties:
+      credentials: "keystonerc_admin"
+      key: "joaoalencar"
+   profiles:
+      liacloud_low:
+        id: 0
+        template: "cluster.yaml"
+        parameters:
+           image: "Ubuntu1404"
+           flavor: "hpcshelf.medium"
+           public_network: "ext-net"
+           cluster_size: 2
+      liacloud_medium:
+        id: 1
+        template: "cluster.yaml"
+        parameters:
+           image: "Ubuntu1404"
+           flavor: "hpcshelf.medium"
+           public_network: "ext-net"
+           cluster_size: 4

@@ -1,15 +1,9 @@
 # High Level Operations
 class InfrastructureAbstraction:
-    def __init__ (self):
-        self.__implementor = None
+    def __init__ (self, implementor):
+        self.__implementor = implementor
 
-    def load_profiles():
-        """
-        Load available profiles from the profiles.yaml file.
-        """
-        pass
-
-    def check_profile_availability(profile_id):
+    def check_platform_availability(profile_id):
         """
         Not all profiles are readly available.
         For example, a cluster profile may have to wait on queue
@@ -25,7 +19,7 @@ class InfrastructureAbstraction:
         """
         pass
 
-    def plataform_status(platform_id):
+    def platform_status(platform_id):
         """
         Building, ready or deallocated?
         """

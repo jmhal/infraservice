@@ -1,0 +1,21 @@
+infrastructure:
+   type: "Cluster"
+   profile_type: "Slurm"
+   properties:
+      user: 'joaoalencar'
+      credentials: "joaoalencar.pem"
+      ip: "200.19.191.100"
+      port: 22
+   profiles:
+      cenapadufc_low:
+         id: 0
+         partition: "long"
+         nodes: 2
+      cenapadufc_medium:
+         id: 1
+         partition: "long"
+         nodes: 4
+      cenapadufc_gpu:
+         id: 2
+         partition: "gpu"
+         nodes: 1

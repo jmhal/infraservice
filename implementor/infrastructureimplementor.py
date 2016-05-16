@@ -2,7 +2,6 @@
 class InfrastructureImplementor:
     """
     This is the abstract class for the implementor.
-    It should receive the profile and create 
     """
     def __init__(self):
         pass
