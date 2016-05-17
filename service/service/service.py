@@ -7,46 +7,8 @@ server = SoapServer(
         location = 'http://localhost:8000/backend/',
 )
 
-class PlatformDeployment:
-    def __init__(self, infrastructure, id, endpoint, status):
-        self.infrastructure = infrastructure
-        self.id = id
-        self.endpoint = endpoint
-        self.status = status
-    def get_infrastructure(self):
-        return self.infrastructure
-    def update_status(self, status):
-        self.status = status
-    def get_status(self):
-        return self.status
-    def get_id(self):
-        return self.id
-    def get_endpoint(self):
-        return self.endpoint
-
-class Deployments:
-    def __init__(self):
-        self.deployments = []
-    def get_platforms(self):
-        return self.deployments
-    def add_platform(self, platform):
-        self.deployments.append(platform)
-    def remove_platform(self, platform):
-        temp = PlatformDeployment(-1, "","")
-        for x in self.deployments:
-            if x.get_id() == platform.get_id():
-                temp = x
-        try:
-            self.deployments.remove(temp)
-            return 0
-        except ValueError:
-            return 1
-    def persist_platforms(self):
-        pass
-    def load_platforms(self):
-        pass
-
-platforms = Deployments();
+# must protect access
+infrastructure = InfrastructureFactory(profile_files).get_infrastructure()
 
 @register(return_type=int, args=[str])
 def deploy_contract(contract):
@@ -57,13 +19,10 @@ def deploy_contract(contract):
     Input: An XML string representing the contract
     Output: An ID for the platform to be created.
     """
-    global platforms
+    global platforms, infrastructure
     profile_id = extract(contract)
-    infrastructure = InfrastructureFactory(profile_files).get_infrastructure()
     platform = infrastructure.create_platform(profileID)
-    platform_id = create_unique_identifier()
-    platforms.add_platform(PlatformDeployment(platform, platform_id, "", "BUILDING"))
-    return platform_id
+    return platform.get_id()
 
 @register(return_type=str, args=[int])
 def platform_deployment_status(platform_id):

@@ -3,7 +3,8 @@ class InfrastructureImplementor:
     """
     This is the abstract class for the implementor.
     """
-    def __init__(self):
+    def __init__(self, profiles):
+        self.profiles = profiles
         pass
 
     def allocate_machines():

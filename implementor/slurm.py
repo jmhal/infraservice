@@ -1,6 +1,7 @@
-# This is the SLURM cluster implementor. Here we have specific methods that
-# are equivalent to slurm command line programs.
-
+"""
+This is the SLURM cluster implementor. Here we have specific methods that
+are equivalent to slurm command line programs.
+"""
 # This is the implementor class
 from infrastructureimplementor import InfrastructureImplementor
 
@@ -8,7 +9,7 @@ from infrastructureimplementor import InfrastructureImplementor
 import paramiko
 
 class Slurm(InfrastructureImplementor):
-    def __init__(self, address, port, user, key):
+    def __init__(self, profiles, properties):
         """ Set up SSH access.
         In order to execute SLURM commands, this method initializes the IP address
         of the cluster, the user and the ssh key file.
@@ -17,10 +18,11 @@ class Slurm(InfrastructureImplementor):
         user    -- the username
         key     -- filename to the credentials for login
         """
-        self._address = address
-        self._port = port
-        self._user = user
-        self._key = key
+        InfrastructureImplementor.__init__(self, profiles)
+        self._address = properties['ip']
+        self._port = properties['port']
+        self._user = properties['user']
+        self._key = properties['credentials']
 
         self._ssh = paramiko.SSHClient()
         self._ssh.load_system_host_keys()
@@ -36,12 +38,6 @@ class Slurm(InfrastructureImplementor):
         Closes the connection openned in connect()
         """
         self._ssh.close()
-
-    def parseProfile(self, profile):
-        """ Parse profile to params
-        Receive the profile description and turn it into params for salloc
-        """
-        pass
 
     def salloc(self, params):
         """ Allocate resources
