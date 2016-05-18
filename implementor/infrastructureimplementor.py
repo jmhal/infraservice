@@ -3,36 +3,63 @@ class InfrastructureImplementor:
     """
     This is the abstract class for the implementor.
     """
-    def __init__(self, profiles):
-        self.profiles = profiles
+    def __init__(self, properties):
+        self.properties = properties
         pass
 
-    def allocate_machines():
+    def authenticate(self):
         """
-        Allocate the processing nodes on the given infrastructure
+        Will process the credentials and set up the variables for authentication.
+        """
+        pass
+
+    def verify_profile_availability(self, profile):
+        """
+        A large data structure containing all the available resources. The refined
+        abstraction will match these to the profiles.
+        """
+        pass
+
+    def allocate_resources():
+        """
+        Allocate the processing nodes on the given infrastructure.
+        """
+        pass
+
+    def allocation_status():
+        """
+        How is the allocation going.
+        """
+        pass
+
+    def deallocate_resources():
+        """
+        Release the allocated machines
         """
         pass
 
     def deploy_container():
         """
-        Deploy the component container
+        Deploy the component container.
         """
         pass
 
-    def status():
+    def container_status():
         """
-        Returns the status
+        Returns the status of the container.
         """
         pass
 
     def get_container_endpoints():
         """
-        Retrieve the container's endpoint for componente deployment
+        Retrieve the container's endpoint for componente deployment.
         """
         pass
 
-    def deallocate_machines():
+    def destroy_container():
         """
-        Release the allocated machines
+        Destroy the container.
         """
         pass
+
+x

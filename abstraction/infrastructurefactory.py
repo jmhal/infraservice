@@ -34,7 +34,7 @@ class InfrastructureFactory:
         profile_implementor_module = importlib.import_module("implementor." + profile_type.lower())
         profile_implementor = getattr(profile_implementor_module, profile_type)
 
-        infrastructure = infrastructure_abstraction(profile_implementor(profiles, properties))
+        infrastructure = infrastructure_abstraction(profile_implementor(properties), profiles)
         return infrastructure
 
 def main():

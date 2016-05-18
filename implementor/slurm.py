@@ -9,7 +9,7 @@ from infrastructureimplementor import InfrastructureImplementor
 import paramiko
 
 class Slurm(InfrastructureImplementor):
-    def __init__(self, profiles, properties):
+    def __init__(self, properties):
         """ Set up SSH access.
         In order to execute SLURM commands, this method initializes the IP address
         of the cluster, the user and the ssh key file.
@@ -18,7 +18,7 @@ class Slurm(InfrastructureImplementor):
         user    -- the username
         key     -- filename to the credentials for login
         """
-        InfrastructureImplementor.__init__(self, profiles)
+        InfrastructureImplementor.__init__(self, properties)
         self._address = properties['ip']
         self._port = properties['port']
         self._user = properties['user']
@@ -27,9 +27,9 @@ class Slurm(InfrastructureImplementor):
         self._ssh = paramiko.SSHClient()
         self._ssh.load_system_host_keys()
 
-    def connect(self):
+    def authenticate(self):
         """ Creates a SSH connection
-        Will create a connection based on the constructor parameters.
+        Will create a connection based on the profile properties.
         """
         self._ssh.connect(self._address, self._port, username=self._user, key_filename=self._key)
 
