@@ -1,9 +1,10 @@
 from pyws.server import SoapServer
 from pyws.functions.register import register
+from common.platform import Platform
 
 server = SoapServer(
         service_name = 'BackEnd',
-        tns = 'http://www.mdcc.ufc.br/backend/hpcshelf',
+        tns = 'http://www.mdcc.ufc.br/hpcshelf/backend/',
         location = 'http://localhost:8000/backend/',
 )
 
@@ -19,7 +20,7 @@ def deploy_contract(contract):
     Input: An XML string representing the contract
     Output: An ID for the platform to be created.
     """
-    global platforms, infrastructure
+    global infrastructure
     profile_id = extract(contract)
     platform = infrastructure.create_platform(profileID)
     return platform.get_id()

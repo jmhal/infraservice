@@ -1,26 +1,9 @@
 from multiprocessing import Lock
-
-class Platform:
-    def __init__(self, id, endpoint, status):
-        self.id = id
-        self.endpoint = endpoint
-        self.status = status
-
-    def update_status(self, status):
-        self.status = status
-
-    def get_status(self):
-        return self.status
-
-    def get_id(self):
-        return self.id
-
-    def get_endpoint(self):
-        return self.endpoint
+from common import Platform
 
 class Sessions:
     """
-    This class with hold the current allocations and platforms. 
+    This class with hold the current allocations and platforms.
     """
     def __init__(self):
         self.sessions = []
