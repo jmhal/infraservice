@@ -3,12 +3,13 @@ High Level Operations for every infrastructure
 """
 from common.exceptions import ProfileNotFound
 from common.sessions import Sessions
+import random
 
 class InfrastructureAbstraction:
     def __init__ (self, implementor, profiles):
         self.implementor = implementor
         self.profiles = profiles
-        self.platforms = []
+        self.sessions = Sessions()
 
     def get_profile(profile_id):
         for profile in self.profiles.keys():
@@ -16,7 +17,7 @@ class InfrastructureAbstraction:
                return profile
         raise ProfileNotFound(profile_id, self.profiles)
 
-    def check_platform_availability(profile_id):
+    def check_platform_availability(self, profile_id):
         """
         Not all profiles are readly available.
         For example, a cluster profile may have to wait on queue
@@ -25,7 +26,7 @@ class InfrastructureAbstraction:
         """
         pass
 
-    def create_platform(profile_id):
+    def create_platform(self, profile_id):
         """
         A platform is a container+infrastructure. This method should allocate
         the resources and deploy the container.
@@ -33,19 +34,21 @@ class InfrastructureAbstraction:
         profile = get_profile(profile_id)
         allocation_id = self.implementor.allocate_resources(profile)
         container_id = self.implementor.deploy_container(allocation_id)
-        platform = Platform((allocation_id,container_id), "", "BUILDING" )
-        platforms.append(platform)
-        return (allocation_id,container_id)
+        platform_id = random.randint(0,100000)
+        platform = Platform(plataform_id, (allocation_id, container_id), "", "BUILDING" )
+        self.sessions.add_platform(platform)
+        return platform_id
 
-    def platform_status(platform_id):
+    def platform_status(self, platform_id):
         """
-        Building, ready or deallocated?
+        BUILDING, READY or DEALLOCATED (for resources and container)?
         """
-        allocation_status = self.implementor.allocation_status(platformid[0])
-        deployment_status = self.implementor.container_status(platformid[1])
+        platform = self.sessions.get_platform(platform_id)
+        allocation_status = self.implementor.allocation_status(platform.get_resources_id()[0])
+        deployment_status = self.implementor.container_status(platform.get_resources_id()[0])
+        return (allocation_status, deployment_status)
 
-
-    def destroy_platform(plataform_id):
+    def destroy_platform(self, plataform_id):
         """
         Destroy the platform.
         """

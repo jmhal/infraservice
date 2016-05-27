@@ -22,8 +22,8 @@ def deploy_contract(contract):
     """
     global infrastructure
     profile_id = extract(contract)
-    platform = infrastructure.create_platform(profileID)
-    return platform.get_id()
+    platform_id = infrastructure.create_platform(profile_id)
+    return platform_id
 
 @register(return_type=str, args=[int])
 def platform_deployment_status(platform_id):
