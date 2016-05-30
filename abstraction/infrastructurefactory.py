@@ -41,6 +41,5 @@ def main():
     factory = InfrastructureFactory("/home/jmhal/repositorios/infraservice/profiles/profiles_cluster.yaml")
     print factory.get_infrastructure()
 
-
 if __name__ == "__main__":
     main()

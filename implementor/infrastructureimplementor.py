@@ -1,3 +1,4 @@
+from common.sessions import Sessions
 # Primitive Operations
 class InfrastructureImplementor:
     """
@@ -5,11 +6,10 @@ class InfrastructureImplementor:
     """
     def __init__(self, properties):
         self.properties = properties
-        pass
 
     def authenticate(self):
         """
-        Will process the credentials and set up the variables for authentication.
+        Load credentials
         """
         pass
 
@@ -20,46 +20,45 @@ class InfrastructureImplementor:
         """
         pass
 
-    def allocate_resources():
+    def allocate_resources(self, platform, profile):
         """
-        Allocate the processing nodes on the given infrastructure.
+        Allocate the processing nodes on the given infrastructure. This will have
+        to start a thread to update the platform status.
         """
         pass
 
-    def allocation_status():
+    def allocation_status(self, allocation_id):
         """
         How is the allocation going.
         """
         pass
 
-    def deallocate_resources():
+    def deallocate_resources(self, platform):
         """
         Release the allocated machines
         """
         pass
 
-    def deploy_container():
+    def deploy_container(self, allocation_id):
         """
         Deploy the component container.
         """
         pass
 
-    def container_status():
+    def container_status(self, allocation_id):
         """
         Returns the status of the container.
         """
         pass
 
-    def get_container_endpoints():
+    def get_container_endpoints(self, allocation_id):
         """
         Retrieve the container's endpoint for componente deployment.
         """
         pass
 
-    def destroy_container():
+    def destroy_container(self, container_id):
         """
         Destroy the container.
         """
         pass
-
-x

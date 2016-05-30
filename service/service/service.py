@@ -11,7 +11,7 @@ server = SoapServer(
 # must protect access
 infrastructure = InfrastructureFactory(profile_files).get_infrastructure()
 
-@register(return_type=int, args=[str])
+@register(return_type=str, args=[str])
 def deploy_contract(contract):
     """
     It receives an string containing the contract. This contract is in XML format.

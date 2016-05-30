@@ -1,15 +1,15 @@
 class Platform:
-    def __init__(self, id, resources_id, endpoint, status):
+    def __init__(self, id, allocation_id, endpoint, status):
         self.id = id
-        self.resource_id = resources_id
+        self.allocation_id = allocation_id
         self.endpoint = endpoint
         self.status = status
 
     def get_id(self):
         return self.id
 
-    def get_resources_id(self):
-        return self.resources_id
+    def get_allocation_id(self):
+        return self.allocation_id
 
     def set_status(self, status):
         self.status = status
