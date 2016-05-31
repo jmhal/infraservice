@@ -1,5 +1,5 @@
 from multiprocessing import Lock
-from common import Platform
+from common.platform import Platform
 
 class Sessions:
     """
@@ -16,7 +16,7 @@ class Sessions:
     def get_platform(self, platform_id):
         with self.mutex:
            for p in self.sessions:
-              if p.id = platform_id:
+              if p.id == platform_id:
                  return p
 
     def remove_platform(self, platform_id):

@@ -9,6 +9,7 @@ server = SoapServer(
 )
 
 # must protect access
+profile_files = ""
 infrastructure = InfrastructureFactory(profile_files).get_infrastructure()
 
 @register(return_type=str, args=[str])

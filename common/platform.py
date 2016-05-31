@@ -11,6 +11,9 @@ class Platform:
     def get_allocation_id(self):
         return self.allocation_id
 
+    def set_allocation_id(self, allocation_id):
+        self.allocation_id = allocation_id
+
     def set_status(self, status):
         self.status = status
 
