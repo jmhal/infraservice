@@ -5,6 +5,9 @@ class Platform:
         self.endpoint = endpoint
         self.status = status
 
+    def __str__(self):
+        return "ID: " + str(self.id) + " Allocation ID: " + str(self.allocation_id) + " Endpoint: " + self.endpoint + " Status: " + self.status
+
     def get_id(self):
         return self.id
 
