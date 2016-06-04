@@ -30,6 +30,7 @@ class Slurm(InfrastructureImplementor):
     def authenticate(self):
         """ Creates a SSH connection
         Will create a connection based on the profile properties.
+        Does not return anything.
         """
         self._ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self._ssh.connect(self._address, self._port, username=self._user, key_filename=self._key)
@@ -38,6 +39,7 @@ class Slurm(InfrastructureImplementor):
         """
         Use sinfo to see if the queue and the partition has the available resources.
         profile -- the dictionary with the profile data.
+        returns True or False
         """
         nodes = int(profile.values()[0]['nodes'])
         partition = profile.values()[0]['partition']
@@ -52,6 +54,7 @@ class Slurm(InfrastructureImplementor):
         Use salloc to make an allocation.
         platform -- the object to be updated with the allocation id
         profile -- the dictionary with the profile data.
+        Returns the allocation ID
         """
         profile_id = profile.values()[0]['id']
         nodes = profile.values()[0]['nodes']
@@ -71,6 +74,7 @@ class Slurm(InfrastructureImplementor):
         COMPLETED, CONFIGURING, FAILED, TIMEOUT, PREEMPTED, and NODE_FAIL
         See the man page of squeue for details.
         platform -- the platform that needs the resources
+        Returns the Allocation Status
         """
         platform.set_status(self.squeue("-h -j " + str(platform.get_allocation_id()) + " -o %T")[:-1])
         return platform.get_status()
@@ -79,6 +83,7 @@ class Slurm(InfrastructureImplementor):
         """
         Release the allocated machines
         platform -- the platform that was using the resources
+        Does not return anything.
         """
         allocation_id = platform.get_allocation_id()
         self.scancel(str(allocation_id))

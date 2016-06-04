@@ -4,6 +4,11 @@ infrastructure:
    properties:
       credentials: "keystonerc_admin"
       key: "joaoalencar"
+      username: "joaoalencar"
+      password: "XXXXXXX"
+      auth_url: "http://200.19.177.89:5000/v2.0"
+      tenant_name: "hpcshelf"
+      region_name: "RegionOne"
    profiles:
       liacloud_low:
         id: 0
