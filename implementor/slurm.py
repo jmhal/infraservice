@@ -65,6 +65,7 @@ class Slurm(InfrastructureImplementor):
 
         allocation_id = int(self.salloc("-p " + partition + " -n "+ str(nodes) + " --no-shell").split(" ")[4])
         platform.set_allocation_id(allocation_id)
+        platform.set_status("BUILDING")
         return allocation_id
 
     def allocation_status(self, platform):
@@ -88,6 +89,7 @@ class Slurm(InfrastructureImplementor):
         allocation_id = platform.get_allocation_id()
         self.scancel(str(allocation_id))
         platform.set_status("COMPLETED")
+        self.close()
 
     def close(self):
         """ Just closes the SSH connection
@@ -174,7 +176,6 @@ def main():
        earth.deallocate_resources(p)
        print "After Deallocation "
        print p
-       earth.close()
    else:
        print "Insuffiecient Resources..."
 
