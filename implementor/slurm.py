@@ -27,6 +27,20 @@ class Slurm(InfrastructureImplementor):
         self._key = properties['credentials']
         self._ssh = paramiko.SSHClient()
 
+        self.results_status = {
+           'PENDING': "BUILDING",
+           'COMPLETING': "BUILDING",
+           'CONFIGURING': "BUILDING",
+           'RUNNING':"CREATED",
+           'COMPLETED': "DESTROYED",
+           'SUSPENDED': "FAILED",
+           'CANCELLED': "FAILED",
+           'FAILED': "FAILED",
+           'TIMEOUT': "FAILED",
+           'PREEMPTED': "FAILED",
+           'NODE_FAIL': "FAILED"
+        }
+
     def authenticate(self):
         """ Creates a SSH connection
         Will create a connection based on the profile properties.
@@ -65,6 +79,7 @@ class Slurm(InfrastructureImplementor):
 
         allocation_id = int(self.salloc("-p " + partition + " -n "+ str(nodes) + " --no-shell").split(" ")[4])
         platform.set_allocation_id(allocation_id)
+
         platform.set_status("BUILDING")
         return allocation_id
 
@@ -77,7 +92,9 @@ class Slurm(InfrastructureImplementor):
         platform -- the platform that needs the resources
         Returns the Allocation Status
         """
-        platform.set_status(self.squeue("-h -j " + str(platform.get_allocation_id()) + " -o %T")[:-1])
+        slurm_status = self.squeue("-h -j " + str(platform.get_allocation_id()) + " -o %T")[:-1]
+        platform_status = self.results_status[slurm_status]
+        platform.set_status(platform_status)
         return platform.get_status()
 
     def deallocate_resources(self, platform):
@@ -88,7 +105,7 @@ class Slurm(InfrastructureImplementor):
         """
         allocation_id = platform.get_allocation_id()
         self.scancel(str(allocation_id))
-        platform.set_status("COMPLETED")
+        platform.set_status("DESTROYED")
         self.close()
 
     def close(self):

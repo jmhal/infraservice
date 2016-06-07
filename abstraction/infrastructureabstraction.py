@@ -46,7 +46,7 @@ class InfrastructureAbstraction:
 
     def platform_status(self, platform_id):
         """
-        The platform status is depended on the kind of implementor.
+        The platform status will be BUILDING, CREATED, DESTROYED, FAILED 
         platform_id -- the id of the platform
         """
         platform = self.sessions.get_platform(platform_id)
