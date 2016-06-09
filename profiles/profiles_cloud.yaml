@@ -14,6 +14,7 @@ infrastructure:
         id: 0
         template: "cluster.yaml"
         parameters:
+           stack_name: "low"
            image: "Ubuntu1404"
            flavor: "hpcshelf.medium"
            public_network: "ext-net"
@@ -22,6 +23,7 @@ infrastructure:
         id: 1
         template: "cluster.yaml"
         parameters:
+           stack_name: "medium"
            image: "Ubuntu1404"
            flavor: "hpcshelf.medium"
            public_network: "ext-net"

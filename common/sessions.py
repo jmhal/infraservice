@@ -1,5 +1,6 @@
 from multiprocessing import Lock
 from common.platform import Platform
+from common.exceptions import PlatformDoesNotExist
 
 class Sessions:
     """
@@ -18,6 +19,8 @@ class Sessions:
            for p in self.sessions:
               if p.id == platform_id:
                  return p
+           raise PlatformDoesNotExist(platform_id)              
+
 
     def remove_platform(self, platform_id):
         with self.mutex:

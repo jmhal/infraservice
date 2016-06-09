@@ -6,6 +6,7 @@ import time
 
 from os import environ as env
 from os import path as path
+from datetime import datetime
 from heatclient.common import template_utils
 from implementor.infrastructureimplementor import InfrastructureImplementor
 from common.platform import Platform
@@ -23,6 +24,9 @@ class OpenStack(InfrastructureImplementor):
         self.tenant_name = properties['tenant_name']
         self.region_name = properties['region_name']
 
+        self.token_create_time = datetime.now()
+        self.token = self.get_auth_token(self.auth_url + "/tokens", self.tenant_name, self.username, self.password)
+
         self.results_status = {
            'CREATE_IN_PROGRESS': "BUILDING",
            'CREATE_COMPLETE':"CREATED",
@@ -34,7 +38,10 @@ class OpenStack(InfrastructureImplementor):
         """
         Create a token for the heat API calls.
         """
-        self.token = self.get_auth_token(self.auth_url + "/tokens", self.tenant_name, self.username, self.password)
+        now = datetime.now()
+        difference = now - self.token_create_time
+        if difference.seconds > 60 * 60:
+           self.token = self.get_auth_token(self.auth_url + "/tokens", self.tenant_name, self.username, self.password)
         return self.token
 
     def verify_profile_availability(self, profile):
@@ -51,11 +58,12 @@ class OpenStack(InfrastructureImplementor):
         the platform
         profile -- the resources needed
         """
+        self.authenticate()
         tenant_id = self.get_tenant_id(self.auth_url + "/tenants", self.token, self.tenant_name)
         heat_base_url = "http://" + self.auth_url.split(":")[1][2:] + ":8004/v1"
-        stack_name = profile.keys()[0]
-        template_file = profile.values()[0]['template']
-        params = profile.values()[0]['parameters']
+        stack_name = profile['stack_name'] + str(platform.get_id())
+        template_file = profile['template']
+        params = profile['parameters']
         params['key'] = self.key
 
         stack_id = self.create_stack(token = self.token, tenant_id = tenant_id, heat_base_url = heat_base_url,
@@ -70,6 +78,7 @@ class OpenStack(InfrastructureImplementor):
         How is the stack creation going? This should update the platform object.
         platform -- the platform that needs the resources
         """
+        self.authenticate()
         tenant_id = self.get_tenant_id(self.auth_url + "/tenants", self.token, self.tenant_name)
         heat_base_url = "http://" + self.auth_url.split(":")[1][2:] + ":8004/v1"
         stack_name = platform.get_allocation_id().split(":")[0]
@@ -86,6 +95,7 @@ class OpenStack(InfrastructureImplementor):
         Destroy the stack.
         platform -- the platform that was using the resources
         """
+        self.authenticate()
         tenant_id = self.get_tenant_id(self.auth_url + "/tenants", self.token, self.tenant_name)
         heat_base_url = "http://" + self.auth_url.split(":")[1][2:] + ":8004/v1"
         stack_name = platform.get_allocation_id().split(":")[0]
@@ -151,7 +161,7 @@ def main():
       'credentials': "keystonerc_admin",
       'key': "joaoalencar",
       'username': "joaoalencar",
-      'password': "sagan85",
+      'password': "XXXXX",
       'auth_url': "http://200.19.177.89:5000/v2.0",
       'tenant_name': "hpcshelf",
       'region_name': "RegionOne"

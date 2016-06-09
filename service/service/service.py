@@ -1,6 +1,9 @@
+import time
+
 from pyws.server import SoapServer
 from pyws.functions.register import register
 from common.platform import Platform
+from abstraction.infrastructurefactory import InfrastructureFactory
 
 server = SoapServer(
         service_name = 'BackEnd',
@@ -9,17 +12,19 @@ server = SoapServer(
 )
 
 # must protect access
-profile_files = ""
+#profile_files = "/home/jmhal/repositorios/infraservice/profiles/profiles_cluster_local.yaml"
+profile_files = "/home/jmhal/repositorios/profiles_cloud_local.yaml"
 infrastructure = InfrastructureFactory(profile_files).get_infrastructure()
 
-@register(return_type=str, args=[str])
+@register(return_type=str, args=[int])
 def deploy_contract(contract):
     """
     It receives an string containing the contract. This contract is in XML format.
     It will extract the profile ID from the contract and will create the corresponding
     platform.
     Input: An XML string representing the contract
-    Output: An ID for the platform to be created.
+    Output: An ID for the platform to be created. If it can't be created, the value
+    will be 0.
     """
     global infrastructure
     profile_id = extract(contract)
@@ -34,7 +39,8 @@ def platform_deployment_status(platform_id):
     Input: The ID of the platform.
     Output: Status. This can be BUILDING, FAILED or NULL.
     """
-    pass
+    global infrastructure
+    return infrastructure.platform_status(platform_id)
 
 @register(return_type=str, args=[int])
 def get_platform_endpoint(platform_id):
@@ -53,4 +59,41 @@ def destroy_platform(platform_id):
     Input: The ID of the platform.
     Output: SUCCESS or NULL if nonexistent platform.
     """
-    pass
+    return infrastructure.destroy_platform(platform_id)
+
+def extract(contract):
+    return contract
+
+def main():
+    print profile_files
+
+    platform0_id = deploy_contract(0)
+    if platform0_id != 0:
+       print "Platform ID: " + str(platform0_id)
+       status = "BUILDING"
+       while status == "BUILDING":
+          print status
+          status = platform_deployment_status(platform0_id)
+          time.sleep(5)
+       print status
+
+    else :
+       print "Unable to allocate profile 0"
+
+    platform1_id = deploy_contract(0)
+    if platform1_id != 0:
+       print "Platform ID: " + str(platform1_id)
+       status = "BUILDING"
+       while status == "BUILDING":
+          print status
+          status = platform_deployment_status(platform1_id)
+          time.sleep(5)
+       print status
+    else :
+       print "Unable to allocate profile 0"
+
+    destroy_platform(platform0_id)
+    destroy_platform(platform1_id)
+
+if __name__ == "__main__":
+    main()

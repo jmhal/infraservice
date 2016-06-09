@@ -3,5 +3,5 @@
 from infrastructureabstraction import InfrastructureAbstraction
 
 class Cloud(InfrastructureAbstraction):
-    def __init__(self, cloudImplementor):
-        self.__implementor = cloudImplementor;
+    def __init__(self, cloudImplementor, profiles):
+        InfrastructureAbstraction.__init__(self, cloudImplementor, profiles)

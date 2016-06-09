@@ -2,7 +2,10 @@
 High Level Operations for every infrastructure
 """
 from common.exceptions import ProfileNotFound
+from common.exceptions import ResourcesNotAvailable
+from common.exceptions import PlatformDoesNotExist
 from common.sessions import Sessions
+from common.platform import Platform
 import uuid
 
 class InfrastructureAbstraction:
@@ -10,12 +13,12 @@ class InfrastructureAbstraction:
         self.implementor = implementor
         self.profiles = profiles
         self.sessions = Sessions()
-        self.implementor.authenticate()
+        # self.implementor.authenticate()
 
-    def get_profile(profile_id):
+    def get_profile(self, profile_id):
         for profile in self.profiles.keys():
-            if profile_id == self.profiles[profile]['id']
-               return profile
+            if profile_id == self.profiles[profile]['id']:
+               return self.profiles[profile]
         raise ProfileNotFound(profile_id, self.profiles)
 
     def check_platform_availability(self, profile_id):
@@ -27,7 +30,7 @@ class InfrastructureAbstraction:
         True or False. Will not make reservations, at least for now.
         profile_id -- the desired profile.
         """
-        profile = get_profile(profile_id)
+        profile = self.get_profile(profile_id)
         available =  self.implementor.verify_profile_availability(profile)
         return available
 
@@ -37,20 +40,23 @@ class InfrastructureAbstraction:
         the resources and deploy the container.
         profile_id -- the desired profile.
         """
-        profile = get_profile(profile_id)
+        profile = self.get_profile(profile_id)
         platform_id = uuid.uuid4()
-        platform = Platform(plataform_id, 0, "NO_ENDPOINT", "BUILDING" )
+        platform = Platform(platform_id, 0, "NO_ENDPOINT", "BUILDING" )
         self.sessions.add_platform(platform)
-        self.implementor.allocate_resources(platform, profile)
+        try:
+           self.implementor.allocate_resources(platform, profile)
+        except ResourcesNotAvailable as e:
+           return 0
         return platform_id
 
     def platform_status(self, platform_id):
         """
-        The platform status will be BUILDING, CREATED, DESTROYED, FAILED 
+        The platform status will be BUILDING, CREATED, DESTROYED, FAILED
         platform_id -- the id of the platform
         """
         platform = self.sessions.get_platform(platform_id)
-        return platform.get_status()
+        return self.implementor.allocation_status(platform)
 
     def get_platform_endpoint(self, platform_id):
         """
@@ -58,13 +64,17 @@ class InfrastructureAbstraction:
         platform_id -- the id of the platform
         """
         platform = self.sessions.get_platform(platform_id)
-        platform.get_endpoint()
+        return platform.get_endpoint()
 
-    def destroy_platform(self, plataform_id):
+    def destroy_platform(self, platform_id):
         """
         Destroy the platform.
         platform_id -- the id of the platform
         """
-        platform = self.sessions.get_platform(platform_id)
+        try :
+           platform = self.sessions.get_platform(platform_id)
+        except PlatformDoesNotExist as e:
+           return 0
+
         deallocation_status = self.implementor.deallocate_resources(platform)
         return deallocation_status

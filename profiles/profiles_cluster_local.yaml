@@ -1,0 +1,13 @@
+infrastructure:
+   type: "Cluster"
+   profile_type: "Slurm"
+   properties:
+      user: 'jmhal'
+      credentials: "/home/jmhal/.ssh/id_dsa"
+      ip: "localhost"
+      port: 22
+   profiles:
+      local_cluster:
+         id: 0
+         partition: "long"
+         nodes: 1

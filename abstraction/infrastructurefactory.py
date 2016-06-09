@@ -38,7 +38,7 @@ class InfrastructureFactory:
         return infrastructure
 
 def main():
-    factory = InfrastructureFactory("/home/jmhal/repositorios/infraservice/profiles/profiles_cluster.yaml")
+    factory = InfrastructureFactory("/home/jmhal/repositorios/profiles_cloud_local.yaml")
     print factory.get_infrastructure()
 
 if __name__ == "__main__":

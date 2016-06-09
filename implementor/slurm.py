@@ -55,9 +55,10 @@ class Slurm(InfrastructureImplementor):
         profile -- the dictionary with the profile data.
         returns True or False
         """
-        nodes = int(profile.values()[0]['nodes'])
-        partition = profile.values()[0]['partition']
+        nodes = profile['nodes']
+        partition = profile['partition']
         available_nodes = int(self.sinfo("-p " + partition + " -h --format=%A").split('/')[1])
+
         if available_nodes >= nodes:
             return True
         else:
@@ -70,12 +71,12 @@ class Slurm(InfrastructureImplementor):
         profile -- the dictionary with the profile data.
         Returns the allocation ID
         """
-        profile_id = profile.values()[0]['id']
-        nodes = profile.values()[0]['nodes']
-        partition = profile.values()[0]['partition']
+        profile_id = profile['id']
+        nodes = profile['nodes']
+        partition = profile['partition']
 
         if self.verify_profile_availability(profile) == False:
-            raise ResourcesNotAvailable(profile_id, required_resources)
+            raise ResourcesNotAvailable(profile_id, partition + ":" + str(nodes))
 
         allocation_id = int(self.salloc("-p " + partition + " -n "+ str(nodes) + " --no-shell").split(" ")[4])
         platform.set_allocation_id(allocation_id)
@@ -106,7 +107,7 @@ class Slurm(InfrastructureImplementor):
         allocation_id = platform.get_allocation_id()
         self.scancel(str(allocation_id))
         platform.set_status("DESTROYED")
-        self.close()
+        return True
 
     def close(self):
         """ Just closes the SSH connection
@@ -120,10 +121,14 @@ class Slurm(InfrastructureImplementor):
         instantaneous resouce availability, just return the request ID.
         params -- the parameters to the command
         """
+        self.authenticate()
+
         ssh_stdin, ssh_stdout, ssh_stderr = self._ssh.exec_command("salloc " + params)
         output = ""
         for line in ssh_stderr.readlines():
             output = output + line
+
+        self.close()
         return output
 
     def squeue(self, params):
@@ -131,10 +136,14 @@ class Slurm(InfrastructureImplementor):
         This will see the position of the allocation on the queue
         params -- the parameters to the command
         """
+        self.authenticate()
+
         ssh_stdin, ssh_stdout, ssh_stderr = self._ssh.exec_command("squeue " + params)
         output = ""
         for line in ssh_stdout.readlines():
             output = output + line
+
+        self.close()
         return output
 
     def sinfo(self, params):
@@ -143,10 +152,14 @@ class Slurm(InfrastructureImplementor):
         of idle and allocated machines.
         params -- the parameters to the command
         """
+        self.authenticate()
+
         ssh_stdin, ssh_stdout, ssh_stderr = self._ssh.exec_command("sinfo " + params)
         output = ""
         for line in ssh_stdout.readlines():
             output = output + line
+
+        self.close()
         return output
 
     def scancel(self, params):
@@ -154,10 +167,14 @@ class Slurm(InfrastructureImplementor):
         Destroy the allocation, for any reason
         params -- the parameters to the command
         """
+        self.authenticate()
+
         ssh_stdin, ssh_stdout, ssh_stderr = self._ssh.exec_command("scancel " + params)
         output = ""
         for line in ssh_stdout.readlines():
             output = output + line
+
+        self.close()
         return output
 
 def main():
