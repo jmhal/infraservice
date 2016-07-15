@@ -5,7 +5,7 @@ infrastructure:
       credentials: "keystonerc_admin"
       key: "joaoalencar"
       username: "joaoalencar"
-      password: "XXXXXXX"
+      password: "sagan85"
       auth_url: "http://200.19.177.89:5000/v2.0"
       tenant_name: "hpcshelf"
       region_name: "RegionOne"

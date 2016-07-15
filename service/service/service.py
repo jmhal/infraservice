@@ -12,11 +12,11 @@ server = SoapServer(
 )
 
 # must protect access
-#profile_files = "/home/jmhal/repositorios/infraservice/profiles/profiles_cluster_local.yaml"
-profile_files = "/home/jmhal/repositorios/profiles_cloud_local.yaml"
+# profile_files = "/home/jmhal/repositorios/infraservice/profiles/profiles_cluster_local.yaml"
+profile_files = "/home/joaoalencar/repositorios/infraservice/profiles/profiles_cloud.yaml"
 infrastructure = InfrastructureFactory(profile_files).get_infrastructure()
 
-@register(return_type=str, args=[int])
+@register()
 def deploy_contract(contract):
     """
     It receives an string containing the contract. This contract is in XML format.
@@ -26,12 +26,13 @@ def deploy_contract(contract):
     Output: An ID for the platform to be created. If it can't be created, the value
     will be 0.
     """
-    global infrastructure
-    profile_id = extract(contract)
-    platform_id = infrastructure.create_platform(profile_id)
-    return platform_id
+    # global infrastructure
+    # profile_id = extract(contract)
+    # platform_id = infrastructure.create_platform(profile_id)
+    # return platform_id
+    return contract
 
-@register(return_type=str, args=[int])
+@register()
 def platform_deployment_status(platform_id):
     """
     The deploy will take time, even in a public cloud. This method returns the
@@ -39,10 +40,11 @@ def platform_deployment_status(platform_id):
     Input: The ID of the platform.
     Output: Status. This can be BUILDING, FAILED or NULL.
     """
-    global infrastructure
-    return infrastructure.platform_status(platform_id)
+    # global infrastructure
+    # return infrastructure.platform_status(platform_id)
+    return platform_id
 
-@register(return_type=str, args=[int])
+@register()
 def get_platform_endpoint(platform_id):
     """
     After the deployment is completed, the endpoints to the platform are made
@@ -50,16 +52,17 @@ def get_platform_endpoint(platform_id):
     Input: The ID of the platform.
     Output: A string with the endpoint or NULL if nonexistent platform.
     """
-    pass
+    return platform_id
 
-@register(return_type=str, args=[int])
+@register()
 def destroy_platform(platform_id):
     """
     Just destroy the platform.
     Input: The ID of the platform.
     Output: SUCCESS or NULL if nonexistent platform.
     """
-    return infrastructure.destroy_platform(platform_id)
+    # return infrastructure.destroy_platform(platform_id)
+    return platform_id
 
 def extract(contract):
     return contract
