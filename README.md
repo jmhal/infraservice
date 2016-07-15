@@ -13,7 +13,7 @@ I'm using either Fedora 24 or Ubuntu 14.04. The basic requirement is Python 2.7.
 
 Install the distro packages for OpenSSL development (something like openssl-devel) and development libraries for XML (something like libxslt-devel and libxml-devel)
 
-`$ pip install paramiko python-heatclient django pyws` 
+`$ pip install paramiko python-heatclient django pyws suds` 
 
 `$ mkdir repositorios`
 
