@@ -19,8 +19,11 @@ class Sessions:
            for p in self.sessions:
               if p.id == platform_id:
                  return p
-           raise PlatformDoesNotExist(platform_id)              
+           raise PlatformDoesNotExist(platform_id)
 
+    def get_platform_list(self):
+        with self.mutex:
+            return [ p.get_id() for p in self.sessions ]
 
     def remove_platform(self, platform_id):
         with self.mutex:

@@ -1,6 +1,10 @@
 import suds
 client = suds.client.Client('http://localhost:8000/backend/wsdl', cache=None)
 
+profiles = client.service.available_profiles()[0]
+for profile in profiles:
+    print profile
+
 platform_id = client.service.deploy_contract("0")
 print platform_id
 

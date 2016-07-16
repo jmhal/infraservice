@@ -1,6 +1,7 @@
 class Platform:
-    def __init__(self, id, allocation_id, endpoint, status):
+    def __init__(self, id, profile_id, allocation_id, endpoint, status):
         self.id = id
+        self.profile_id = profile_id
         self.allocation_id = allocation_id
         self.endpoint = endpoint
         self.status = status
@@ -10,6 +11,9 @@ class Platform:
 
     def get_id(self):
         return self.id
+
+    def get_profile_id(self):
+        return self.profile_id
 
     def get_allocation_id(self):
         return self.allocation_id

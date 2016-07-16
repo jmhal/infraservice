@@ -42,13 +42,23 @@ class InfrastructureAbstraction:
         """
         profile = self.get_profile(profile_id)
         platform_id = uuid.uuid4()
-        platform = Platform(platform_id, 0, "NO_ENDPOINT", "BUILDING" )
+        platform = Platform(id = platform_id, profile_id = profile_id,
+                            allocation_id = 0, endpoint = "NO_ENDPOINT",
+                            status = "BUILDING" )
         self.sessions.add_platform(platform)
         try:
            self.implementor.allocate_resources(platform, profile)
         except ResourcesNotAvailable as e:
            return 0
         return platform_id
+
+    def get_available_platforms(self):
+        """
+        Returns a dictionary of all instantiated platforms:
+        (platform_id, profile_id)
+        """
+        platforms_ids = self.sessions.get_platform_list();
+        return dict( (id, self.sessions.get_platform(id).get_profile_id()) for id in platforms_ids )
 
     def platform_status(self, platform_id):
         """

@@ -1,7 +1,11 @@
 import time
+import yaml
+
+from os import environ as env
 
 from pyws.server import SoapServer
 from pyws.functions.register import register
+
 from common.platform import Platform
 from abstraction.infrastructurefactory import InfrastructureFactory
 
@@ -13,8 +17,26 @@ server = SoapServer(
 
 # must protect access
 # profile_files = "/home/jmhal/repositorios/infraservice/profiles/profiles_cluster_local.yaml"
-profile_files = "/home/joaoalencar/repositorios/infraservice/profiles/profiles_cloud.yaml"
-infrastructure = InfrastructureFactory(profile_files).get_infrastructure()
+profiles_file = env['PROFILES_FILE']
+# infrastructure = InfrastructureFactory(profiles_file).get_infrastructure()
+
+# This is necessary for the web service to be able to return a dictionary.
+# It must know beforehand the type.
+profiles_ids = {0: 'profiles_ids', 'profile_name': str, 'profile_id': int}
+@register(return_type=[profiles_ids])
+def available_profiles():
+    """
+    Returns the available profiles for this backend.
+    Input: no need for input
+    Output: a dictionary with the profiles.
+    """
+    global profiles_file
+    profiles_available = []
+    profiles = yaml.load(open(profiles_file,"r"))['infrastructure']['profiles']
+    for profile_name in profiles.keys():
+        profiles_available.append({'profile_name': profile_name,
+                                   'profile_id': profiles[profile_name]['id']})
+    return profiles_available
 
 @register()
 def deploy_contract(contract):
@@ -53,6 +75,21 @@ def get_platform_endpoint(platform_id):
     Output: A string with the endpoint or NULL if nonexistent platform.
     """
     return platform_id
+
+# This is necessary for the web service to be able to return a dictionary.
+# It must know beforehand the type.
+platforms = {0: 'platforms', 'platform_id': str, 'profile_id': int}
+@register(return_type=[platforms])
+def available_platforms():
+    """
+    Lists the platforms currently instantiated.
+    Input: there is no need for input.
+    Output: A list of platform id's.
+    """
+    global infrastructure
+    platforms_dict = infrastructure.get_available_platforms()
+    platform_list = [ {'platform_id': c, 'profile_id': platforms_dict[c]} for c in platforms_dict ]
+    return platform_list
 
 @register()
 def destroy_platform(platform_id):
