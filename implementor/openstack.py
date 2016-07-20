@@ -14,8 +14,7 @@ from common.platform import Platform
 class OpenStack(InfrastructureImplementor):
     def __init__(self, properties):
         """
-        This will read the rc file and store the value from the environment
-        variables to be used at each heat API call.
+        This will set the values to be used at each heat API call.
         """
         self.username = properties['username']
         self.password = properties['password']
@@ -23,6 +22,7 @@ class OpenStack(InfrastructureImplementor):
         self.auth_url = properties['auth_url']
         self.tenant_name = properties['tenant_name']
         self.region_name = properties['region_name']
+        self.template_dir = properties['template_dir']
 
         self.token_create_time = datetime.now()
         self.token = self.get_auth_token(self.auth_url + "/tokens", self.tenant_name, self.username, self.password)
@@ -61,9 +61,11 @@ class OpenStack(InfrastructureImplementor):
         self.authenticate()
         tenant_id = self.get_tenant_id(self.auth_url + "/tenants", self.token, self.tenant_name)
         heat_base_url = "http://" + self.auth_url.split(":")[1][2:] + ":8004/v1"
-        stack_name = profile['stack_name'] + str(platform.get_id())
-        template_file = profile['template']
+
         params = profile['parameters']
+        stack_name = "profileID" + str(profile['id']) + "-" + str(platform.get_id())
+
+        template_file = self.template_dir + "/" + profile['template']
         params['key'] = self.key
 
         stack_id = self.create_stack(token = self.token, tenant_id = tenant_id, heat_base_url = heat_base_url,
@@ -144,6 +146,7 @@ class OpenStack(InfrastructureImplementor):
         }
         r = requests.post(heat_base_url + "/" + tenant_id + "/stacks", data = json.dumps(fields), headers = headers)
         data = r.json()
+        print data
         return data['stack']['id']
 
     def status_stack(self, token, tenant_id, heat_base_url, stack_name, stack_id):
@@ -180,6 +183,18 @@ def main():
          }
       }
    }
+
+   profile = {
+      'id': 0,
+      'parameters': {
+         'stack_name': 'low',
+         'image': 'Ubuntu1404',
+         'flavor': 'hpcshelf.medium',
+         'cluster_size': 2,
+         'public_network': 'ext-net'},
+      'template': 'cluster.yaml'
+   }
+
 
    lia = OpenStack(properties)
    lia.authenticate()

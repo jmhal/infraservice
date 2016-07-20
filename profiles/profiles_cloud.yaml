@@ -2,29 +2,27 @@ infrastructure:
    type: "Cloud"
    profile_type: "OpenStack"
    properties:
-      credentials: "keystonerc_admin"
       key: "joaoalencar"
       username: "joaoalencar"
-      password: "XXXXXXX"
+      password: "sagan85"
       auth_url: "http://200.19.177.89:5000/v2.0"
       tenant_name: "hpcshelf"
       region_name: "RegionOne"
+      template_dir: "/home/joaoalencar/repositorios/infraservice/examples/heat_templates"
    profiles:
       liacloud_low:
         id: 0
-        template: "cluster.yaml"
+        template: "cluster_testing.yaml"
         parameters:
-           stack_name: "low"
            image: "Ubuntu1404"
-           flavor: "hpcshelf.medium"
+           flavor: "shelf.medium"
            public_network: "ext-net"
            cluster_size: 2
       liacloud_medium:
         id: 1
-        template: "cluster.yaml"
+        template: "cluster_testing.yaml"
         parameters:
-           stack_name: "medium"
            image: "Ubuntu1404"
-           flavor: "hpcshelf.medium"
+           flavor: "shelf.medium"
            public_network: "ext-net"
            cluster_size: 4

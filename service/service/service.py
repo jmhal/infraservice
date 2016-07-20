@@ -18,7 +18,7 @@ server = SoapServer(
 # must protect access
 # profile_files = "/home/jmhal/repositorios/infraservice/profiles/profiles_cluster_local.yaml"
 profiles_file = env['PROFILES_FILE']
-# infrastructure = InfrastructureFactory(profiles_file).get_infrastructure()
+infrastructure = InfrastructureFactory(profiles_file).get_infrastructure()
 
 # This is necessary for the web service to be able to return a dictionary.
 # It must know beforehand the type.
@@ -48,11 +48,10 @@ def deploy_contract(contract):
     Output: An ID for the platform to be created. If it can't be created, the value
     will be 0.
     """
-    # global infrastructure
-    # profile_id = extract(contract)
-    # platform_id = infrastructure.create_platform(profile_id)
-    # return platform_id
-    return contract
+    global infrastructure
+    profile_id = extract(contract)
+    platform_id = infrastructure.create_platform(profile_id)
+    return platform_id
 
 @register()
 def platform_deployment_status(platform_id):
@@ -62,9 +61,9 @@ def platform_deployment_status(platform_id):
     Input: The ID of the platform.
     Output: Status. This can be BUILDING, FAILED or NULL.
     """
-    # global infrastructure
-    # return infrastructure.platform_status(platform_id)
-    return platform_id
+    global infrastructure
+    return infrastructure.platform_status(platform_id)
+
 
 @register()
 def get_platform_endpoint(platform_id):
@@ -102,7 +101,7 @@ def destroy_platform(platform_id):
     return platform_id
 
 def extract(contract):
-    return contract
+    return int(contract)
 
 def main():
     print profile_files

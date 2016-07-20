@@ -65,6 +65,7 @@ class InfrastructureAbstraction:
         The platform status will be BUILDING, CREATED, DESTROYED, FAILED
         platform_id -- the id of the platform
         """
+        platform_id = uuid.UUID(platform_id)
         platform = self.sessions.get_platform(platform_id)
         return self.implementor.allocation_status(platform)
 
