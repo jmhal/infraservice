@@ -4,7 +4,7 @@ infrastructure:
    properties:
       key: "joaoalencar"
       username: "joaoalencar"
-      password: "sagan85"
+      password: "XXXXXX"
       auth_url: "http://200.19.177.89:5000/v2.0"
       tenant_name: "hpcshelf"
       region_name: "RegionOne"
