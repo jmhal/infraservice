@@ -58,7 +58,8 @@ class InfrastructureAbstraction:
         (platform_id, profile_id)
         """
         platforms_ids = self.sessions.get_platform_list();
-        return dict( (id, self.sessions.get_platform(id).get_profile_id()) for id in platforms_ids )
+        return dict( (id, self.sessions.get_platform(id).get_profile_id()) for id in platforms_ids if self.sessions.get_platform(id).get_status() != "DESTROYED" )
+
 
     def platform_status(self, platform_id):
         """
@@ -74,6 +75,7 @@ class InfrastructureAbstraction:
         Returns the endpoint.
         platform_id -- the id of the platform
         """
+        platform_id = uuid.UUID(platform_id)
         platform = self.sessions.get_platform(platform_id)
         return platform.get_endpoint()
 
@@ -82,6 +84,7 @@ class InfrastructureAbstraction:
         Destroy the platform.
         platform_id -- the id of the platform
         """
+        platform_id = uuid.UUID(platform_id)
         try :
            platform = self.sessions.get_platform(platform_id)
         except PlatformDoesNotExist as e:

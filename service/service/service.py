@@ -97,9 +97,8 @@ def destroy_platform(platform_id):
     Input: The ID of the platform.
     Output: SUCCESS or NULL if nonexistent platform.
     """
-    # return infrastructure.destroy_platform(platform_id)
-    return platform_id
-
+    return infrastructure.destroy_platform(platform_id)
+    
 def extract(contract):
     return int(contract)
 

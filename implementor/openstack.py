@@ -30,6 +30,7 @@ class OpenStack(InfrastructureImplementor):
         self.results_status = {
            'CREATE_IN_PROGRESS': "BUILDING",
            'CREATE_COMPLETE':"CREATED",
+           'DELETE_IN_PROGRESS': "DESTROYED",
            'DELETE_COMPLETE': "DESTROYED",
            'CREATE_FAILED': "FAILED"
         }
@@ -106,11 +107,11 @@ class OpenStack(InfrastructureImplementor):
         self.delete_stack(token = self.token, tenant_id = tenant_id , heat_base_url = heat_base_url ,
                       stack_name = stack_name, stack_id = stack_id)
 
-        status = self.status_stack(token = self.token, tenant_id = tenant_id, heat_base_url = heat_base_url,
-                     stack_name = stack_name, stack_id = stack_id)
+        # heat_status = self.status_stack(token = self.token, tenant_id = tenant_id, heat_base_url = heat_base_url,
+        #             stack_name = stack_name, stack_id = stack_id)
 
-        platform.set_status('DESTROYED')
-        return status['stack']['stack_status']
+        platform.set_status("DESTROYED")
+        return platform.get_status()
 
     def get_auth_token(self, url, tenant_name, username, password):
         headers = {'Content-Type':'application/json'}
@@ -146,7 +147,6 @@ class OpenStack(InfrastructureImplementor):
         }
         r = requests.post(heat_base_url + "/" + tenant_id + "/stacks", data = json.dumps(fields), headers = headers)
         data = r.json()
-        print data
         return data['stack']['id']
 
     def status_stack(self, token, tenant_id, heat_base_url, stack_name, stack_id):
@@ -157,7 +157,7 @@ class OpenStack(InfrastructureImplementor):
     def delete_stack(self, token, tenant_id, heat_base_url, stack_name, stack_id):
         headers = {'X-Auth-Token': token}
         r = requests.delete(heat_base_url + "/" + tenant_id + "/stacks/" + stack_name + "/" + stack_id, headers = headers)
-        return r.status_code
+        return r
 
 def main():
    properties = {
