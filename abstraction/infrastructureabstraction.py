@@ -52,6 +52,24 @@ class InfrastructureAbstraction:
            return 0
         return platform_id
 
+   def create_platform_callback(self, profile_id, core_session_id):
+        """
+        A platform is a container+infrastructure. This method should allocate
+        the resources and deploy the container.
+        Input: profile_id, core_session_id
+        Output: the platform_id, which is the same of core_session_id
+        """
+        profile = self.get_profile(profile_id)
+        platform = Platform(id = core_session_id, profile_id = profile_id,
+                            allocation_id = 0, endpoint = "NO_ENDPOINT",
+                            status = "BUILDING" )
+        self.sessions.add_platform(platform)
+        try:
+           self.implementor.allocate_resources(platform, profile)
+        except ResourcesNotAvailable as e:
+           return 0
+        return core_session_id
+
     def get_available_platforms(self):
         """
         Returns a dictionary of all instantiated platforms:

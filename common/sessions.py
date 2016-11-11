@@ -4,7 +4,7 @@ from common.exceptions import PlatformDoesNotExist
 
 class Sessions:
     """
-    This class with hold the current allocations and platforms.
+    This class holds the current allocations and platforms.
     """
     def __init__(self):
         self.sessions = []

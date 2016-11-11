@@ -41,7 +41,7 @@ def available_profiles():
 @register()
 def deploy_contract(contract):
     """
-    It receives an string containing the contract. This contract is in XML format.
+    It receives a string containing the contract. This contract is in XML format.
     It will extract the profile ID from the contract and will create the corresponding
     platform.
     Input: An XML string representing the contract
@@ -51,6 +51,20 @@ def deploy_contract(contract):
     global infrastructure
     profile_id = extract(contract)
     platform_id = infrastructure.create_platform(profile_id)
+    return platform_id
+
+@register()
+def deploy_contract_callback(profile_id, core_session_id):
+    """
+    It receives a string containing the profile_id and another with the core_session_id. .
+    It will create the corresponding platform from the profile_id and will assign core_session_id
+    to identify it. The service will later contact the core with a tuple (core_session_id, container_endpoint)
+    Input: A string profile_id, a string core_session_id
+    Output: An ID for the platform to be created. If it can't be created, the value
+    will be 0.
+    """
+    global infrastructure
+    platform_id = infrastructure.create_platform_callback(profile_id, core_session_id)
     return platform_id
 
 @register()
