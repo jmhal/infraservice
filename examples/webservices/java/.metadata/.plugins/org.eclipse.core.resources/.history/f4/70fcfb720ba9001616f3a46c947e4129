@@ -1,0 +1,28 @@
+package simple_client;
+
+import javax.xml.ws.WebServiceRef;
+
+import com.example.Error;
+import com.example.TestPortType;
+import com.example.TestService;
+
+public class SimpleClient {
+	@WebServiceRef(wsdlLocation="http://192.168.1.110:8000/api/wsdl")
+	static TestService service;
+	public static void main(String[] args) {
+		TestPortType port = service.getTestPort();
+		try {
+			String simple = port.addSimple("João", "Marcelo");
+			String triple = port.addTriple("Uchôa", "de", "Alencar");
+			System.out.println(simple);
+			System.out.println(triple);
+			
+		} catch (Error e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+       
+
+	}
+}

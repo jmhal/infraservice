@@ -1,0 +1,18 @@
+package simple_client;
+
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import java.net.URL;
+
+public class SimpleClient {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		URL url = new URL("http://127.0.0.1:9876/calc?wsdl");
+		QName qname = new QName("http://calc/","CalculadoraServerImplService");
+		Service ws = Service.create(url, qname);
+		CalculadoraServer calc = ws.getPort(CalculadoraServer.class);
+
+	}
+
+}
