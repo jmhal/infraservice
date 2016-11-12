@@ -1,0 +1,14 @@
+package simple_client;
+
+import javax.xml.ws.WebServiceRef;
+import com.example.TestPortType;
+import com.example.TestService;
+
+public class SimpleClient {
+
+	public static void main(String[] args) {
+       TestService service;
+       
+
+	}
+}
