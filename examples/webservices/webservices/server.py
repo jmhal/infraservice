@@ -8,12 +8,24 @@ from pyws.functions.args import String, DictOf, Field, TypeFactory
 
 from inspect import getargspec
 
+import thread
+import suds
+import random
+import time
+
 server = SoapServer(
         service_name = 'Test',
         tns = 'http://example.com',
 #        location = 'http://localhost:8000/api/',
         location = 'http://192.168.1.110:8000/api/',
 )
+
+def callback_client(profile_id, core_ip):
+   timeout = random.randint(10,30)
+   print "Waiting ", timeout, " seconds"
+   time.sleep(timeout)
+   client = suds.client.Client('http://' + core_ip + ':8080/callback?wsdl', cache=None)
+   client.service.callback(profile_id, "http://200.19.177.89")
 
 @register()
 def add_triple(a, b, c):
@@ -34,7 +46,8 @@ class Add_Simple(Function):
 
    def add_simple(self, a, b):
       print "The remote IP is", self.remote_ip
-      return a + b
+      thread.start_new_thread( callback_client, (a+b, self.remote_ip ) )
+      return a + b   
 
 f  = Add_Simple()
 server.add_function(f)
