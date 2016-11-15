@@ -17,7 +17,9 @@ public class SimpleClient {
 			TestService service = new TestService(new URL("http://192.168.1.110:8000/api/wsdl"));
 			TestPortType port = service.getTestPort();	
 			String simple = port.addSimple("João", "Marcelo");
+			String triple = port.addTriple("Uchôa", "de", "Alencar");
 			System.out.println(simple);
+			System.out.println(triple);
 			
 		} catch (Error e) {
 			// TODO Auto-generated catch block
