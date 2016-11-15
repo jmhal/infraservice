@@ -1,0 +1,14 @@
+package simple_server;
+
+import javax.jws.WebService;
+
+@WebService(endpointInterface = "simple_server.CallBackServer")
+
+public class CallBackServerImpl implements CallBackServer {
+
+	public float soma(float num1, float num2) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

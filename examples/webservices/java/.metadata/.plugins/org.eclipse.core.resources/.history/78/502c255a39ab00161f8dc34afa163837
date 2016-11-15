@@ -1,0 +1,5 @@
+package simple_server;
+
+public interface CallBackServer {
+
+}

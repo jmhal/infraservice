@@ -3,4 +3,5 @@
 <fullyQualifiedTypeName name="com.example.TestPortType"/>
 <fullyQualifiedTypeName name="com.example.TestService"/>
 <fullyQualifiedTypeName name="java.net.URL"/>
+<fullyQualifiedTypeName name="simple_server.CallBackServerImpl"/>
 </qualifiedTypeNameHistroy>

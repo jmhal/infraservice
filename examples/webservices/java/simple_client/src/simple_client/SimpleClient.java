@@ -11,8 +11,6 @@ import com.example.TestPortType;
 import com.example.TestService;
 
 public class SimpleClient {
-	// @WebServiceRef(wsdlLocation="http://192.168.1.110:8000/api/wsdl")
-	// static 
 	public static void main(String[] args) {
 		
 		try {
