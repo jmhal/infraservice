@@ -1,0 +1,10 @@
+package simple_server;
+
+public class CallBackServerPublisher {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
