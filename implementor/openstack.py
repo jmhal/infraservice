@@ -3,6 +3,7 @@ import requests
 import os
 import yaml
 import time
+import logging
 
 from os import environ as env
 from os import path as path
@@ -13,9 +14,7 @@ from common.platform import Platform
 
 class OpenStack(InfrastructureImplementor):
     def __init__(self, properties):
-        """
-        This will set the values to be used at each heat API call.
-        """
+        # This will set the values to be used at each heat API call.
         self.username = properties['username']
         self.password = properties['password']
         self.key = properties['key']
@@ -34,6 +33,10 @@ class OpenStack(InfrastructureImplementor):
            'DELETE_COMPLETE': "DESTROYED",
            'CREATE_FAILED': "FAILED"
         }
+ 
+        # Configure Logging
+	logging.basicConfig(level=logging.DEBUG)
+	self.logger = logging.getLogger(__name__)
 
     def authenticate(self):
         """
@@ -93,6 +96,7 @@ class OpenStack(InfrastructureImplementor):
         heat_status = status['stack']['stack_status']
         platform.set_status(self.results_status[heat_status])
 	# I have to update the endpoint too
+	self.logger.debug("%s", status)
         return platform.get_status()
 
     def deallocate_resources(self, platform):
@@ -149,6 +153,7 @@ class OpenStack(InfrastructureImplementor):
         }
         r = requests.post(heat_base_url + "/" + tenant_id + "/stacks", data = json.dumps(fields), headers = headers)
         data = r.json()
+	self.logger.debug("CREATE STACK DATA: %s", data)
         return data['stack']['id']
 
     def status_stack(self, token, tenant_id, heat_base_url, stack_name, stack_id):

@@ -11,13 +11,19 @@ import uuid
 import thread
 import suds
 import time
+import logging
+
 
 class InfrastructureAbstraction:
     def __init__ (self, implementor, profiles):
         self.implementor = implementor
         self.profiles = profiles
         self.sessions = Sessions()
-        # self.implementor.authenticate()
+
+	# Configure Logging
+	logging.basicConfig(level=logging.DEBUG)
+	self.logger = logging.getLogger(__name__)
+
 
     def get_profile(self, profile_id):
         for profile in self.profiles.keys():
@@ -63,7 +69,8 @@ class InfrastructureAbstraction:
         Input: profile_id, core_session_id, remote_ip for callback
         Output: the platform_id, which is the same of core_session_id
         """
-        profile = self.get_profile(profile_id)
+	self.logger.debug('profile_id: %s, core_session_id: %s, remote_ip: %s', profile_id, core_session_id, remote_ip)
+        profile = self.get_profile(int(profile_id))
         platform = Platform(id = core_session_id, profile_id = profile_id,
                             allocation_id = 0, endpoint = "NO_ENDPOINT",
                             status = "BUILDING" )
@@ -72,7 +79,7 @@ class InfrastructureAbstraction:
            self.implementor.allocate_resources(platform, profile)
         except ResourcesNotAvailable as e:
            return 0
-        thread.start_new_thread(self.callback_client, (core_session_id, self.remote_ip))
+        # thread.start_new_thread(self.callback_client, (core_session_id, self.remote_ip))
         return core_session_id
 
     def callback_client(platform, core_session_id, core_ip):
@@ -85,6 +92,7 @@ class InfrastructureAbstraction:
         client = suds.client.Client('http://' + core_ip + ':8080/axis2/services/CoreServices?wsdl', cache=None)
         
 	while (self.implementor.allocation_status(platform) == "BUILDING"):
+	   self.logger.debug('Waiting to reply for core_session_id %s to %s.', core_session_id, core_ip)
 	   time.sleep(15)
 	     
 	if self.implementor.allocation_status(platform) == "CREATED":

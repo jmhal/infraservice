@@ -1,5 +1,6 @@
 import time
 import yaml
+import logging
 
 from os import environ as env
 
@@ -15,13 +16,17 @@ from abstraction.infrastructurefactory import InfrastructureFactory
 server = SoapServer(
         service_name = 'BackEnd',
         tns = 'http://www.mdcc.ufc.br/hpcshelf/backend/',
-        location = 'http://' + env['LOCATION_IP'] + ':8000/backend/',
+        location = 'http://' + env['LOCATION_IP'] + ':8000/backendservices/',
 )
 
 # must protect access
 # profile_files = "/home/jmhal/repositorios/infraservice/profiles/profiles_cluster_local.yaml"
 profiles_file = env['PROFILES_FILE']
 infrastructure = InfrastructureFactory(profiles_file).get_infrastructure()
+
+# configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 # This is necessary for the web service to be able to return a dictionary.
 # It must know beforehand the type.
@@ -68,7 +73,8 @@ Input: A string profile_id, a string core_session_id
 Output: An ID for the platform to be created. If it can't be created, the value will be 0.
 """
 class Deploy_Contract_Callback(Function):
-    def __init__(self):
+    def __init__(self, infra):
+        self.infrastructure = infra
         self.remote_ip = None
         self.name = "deploy_contract_callback"
         self.documentation = "deploy_contract_callback"
@@ -81,11 +87,10 @@ class Deploy_Contract_Callback(Function):
         return self.deploy_contract_callback(**args)
 
     def deploy_contract_callback(self, profile_id, core_session_id):
-        # print "The remote IP is", self.remote_ip
-        # thread.start_new_thread( callback_client, (a+b, self.remote_ip ) )
-	platform_id = infrastructure.create_platform_callback(profile_id, core_session_id, self.remote_ip)
-        return platform_id   
-f = Deploy_Contract_Callback()
+	platform_id = self.infrastructure.create_platform_callback(profile_id, core_session_id, self.remote_ip)
+        return platform_id  
+	
+f = Deploy_Contract_Callback(infrastructure)
 server.add_function(f)
 
 @register()
