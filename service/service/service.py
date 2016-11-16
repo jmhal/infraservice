@@ -5,6 +5,9 @@ from os import environ as env
 
 from pyws.server import SoapServer
 from pyws.functions.register import register
+from pyws.functions import Function
+from pyws.functions import NativeFunctionAdapter
+from pyws.functions.args import DictOf, TypeFactory
 
 from common.platform import Platform
 from abstraction.infrastructurefactory import InfrastructureFactory
@@ -12,7 +15,7 @@ from abstraction.infrastructurefactory import InfrastructureFactory
 server = SoapServer(
         service_name = 'BackEnd',
         tns = 'http://www.mdcc.ufc.br/hpcshelf/backend/',
-        location = 'http://localhost:8000/backend/',
+        location = 'http://' + env['LOCATION_IP'] + ':8000/backend/',
 )
 
 # must protect access
@@ -53,19 +56,37 @@ def deploy_contract(contract):
     platform_id = infrastructure.create_platform(profile_id)
     return platform_id
 
-@register()
-def deploy_contract_callback(profile_id, core_session_id):
-    """
-    It receives a string containing the profile_id and another with the core_session_id. .
-    It will create the corresponding platform from the profile_id and will assign core_session_id
-    to identify it. The service will later contact the core with a tuple (core_session_id, container_endpoint)
-    Input: A string profile_id, a string core_session_id
-    Output: An ID for the platform to be created. If it can't be created, the value
-    will be 0.
-    """
-    global infrastructure
-    platform_id = infrastructure.create_platform_callback(profile_id, core_session_id)
-    return platform_id
+
+"""
+I had to create a new class extending pyws.functions.Function. This is a workaround because natively
+the pyws package does not forward the django request to the method, so I had to add code for this to happen. 
+Now the deploy_contract_callback has an attribute named remote_ip, where the callback may be performed. 
+It receives a string containing the profile_id and another with the core_session_id. It will create the corresponding 
+platform from the profile_id and will assign core_session_id to identify it. The service will later contact the core 
+with a tuple (core_session_id, container_endpoint)
+Input: A string profile_id, a string core_session_id
+Output: An ID for the platform to be created. If it can't be created, the value will be 0.
+"""
+class Deploy_Contract_Callback(Function):
+    def __init__(self):
+        self.remote_ip = None
+        self.name = "deploy_contract_callback"
+        self.documentation = "deploy_contract_callback"
+        self.return_type = TypeFactory(str)
+        self.needs_context = False 
+        args_ = [('profile_id', str), ('core_session_id', str)]
+        self.args = DictOf("deploy_contract_callback", *args_)
+
+    def call(self, **args):
+        return self.deploy_contract_callback(**args)
+
+    def deploy_contract_callback(self, profile_id, core_session_id):
+        # print "The remote IP is", self.remote_ip
+        # thread.start_new_thread( callback_client, (a+b, self.remote_ip ) )
+	platform_id = infrastructure.create_platform_callback(profile_id, core_session_id, self.remote_ip)
+        return platform_id   
+f = Deploy_Contract_Callback()
+server.add_function(f)
 
 @register()
 def platform_deployment_status(platform_id):

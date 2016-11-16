@@ -8,6 +8,10 @@ from common.sessions import Sessions
 from common.platform import Platform
 import uuid
 
+import thread
+import suds
+import time
+
 class InfrastructureAbstraction:
     def __init__ (self, implementor, profiles):
         self.implementor = implementor
@@ -52,11 +56,11 @@ class InfrastructureAbstraction:
            return 0
         return platform_id
 
-   def create_platform_callback(self, profile_id, core_session_id):
+    def create_platform_callback(self, profile_id, core_session_id, remote_ip):
         """
         A platform is a container+infrastructure. This method should allocate
         the resources and deploy the container.
-        Input: profile_id, core_session_id
+        Input: profile_id, core_session_id, remote_ip for callback
         Output: the platform_id, which is the same of core_session_id
         """
         profile = self.get_profile(profile_id)
@@ -68,7 +72,26 @@ class InfrastructureAbstraction:
            self.implementor.allocate_resources(platform, profile)
         except ResourcesNotAvailable as e:
            return 0
+        thread.start_new_thread(self.callback_client, (core_session_id, self.remote_ip))
         return core_session_id
+
+    def callback_client(platform, core_session_id, core_ip):
+        """
+	This function will run inside a thread and will check the deployment status.
+	Once the deployment is finished, it will call the core with the endpoint.
+	Input: core_session_id, core_ip
+	Output: void
+	"""
+        client = suds.client.Client('http://' + core_ip + ':8080/axis2/services/CoreServices?wsdl', cache=None)
+        
+	while (self.implementor.allocation_status(platform) == "BUILDING"):
+	   time.sleep(15)
+	     
+	if self.implementor.allocation_status(platform) == "CREATED":
+	   client.service.deployCallback(core_session_id, platform.get_endpoint())
+	else:
+           client.service.deployCallback(core_session_id, "FAILED")
+	return    
 
     def get_available_platforms(self):
         """

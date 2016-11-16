@@ -74,13 +74,6 @@ class OpenStack(InfrastructureImplementor):
 
         platform.set_allocation_id(stack_name + ":" + stack_id)
         platform.set_status("BUILDING")
-   
-        """
-        I think that here I'll have to start a thread to continuosly verify the allocation and
-        update the platform accordingly. This thread will be custom made for each implementor. 
-        Once the building is complete, this thread should invoke the Core with the platform id
-        and the endpoint.       
-        """
 
         return stack_name + ":" + stack_id
 
@@ -99,6 +92,7 @@ class OpenStack(InfrastructureImplementor):
                      stack_name = stack_name, stack_id = stack_id)
         heat_status = status['stack']['stack_status']
         platform.set_status(self.results_status[heat_status])
+	# I have to update the endpoint too
         return platform.get_status()
 
     def deallocate_resources(self, platform):
