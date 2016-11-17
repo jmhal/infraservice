@@ -1,0 +1,9 @@
+package callback_server;
+
+public class CoreCallBackImpl implements CoreCallBack {
+
+	@Override
+	public void callback(int sessionID, String uri) {
+		System.out.println("Profile: " + sessionID + " Endpoint: " + uri);
+	}
+}

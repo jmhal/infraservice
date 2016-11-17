@@ -1,0 +1,11 @@
+package callback_server;
+
+public class CoreCallBackImpl implements CoreCallBack {
+
+	@Override
+	public void callback(int sessionID, String uri) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
