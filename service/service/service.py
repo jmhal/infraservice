@@ -25,7 +25,7 @@ profiles_file = env['PROFILES_FILE']
 infrastructure = InfrastructureFactory(profiles_file).get_infrastructure()
 
 # configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # This is necessary for the web service to be able to return a dictionary.

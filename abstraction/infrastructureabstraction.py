@@ -6,13 +6,45 @@ from common.exceptions import ResourcesNotAvailable
 from common.exceptions import PlatformDoesNotExist
 from common.sessions import Sessions
 from common.platform import Platform
-import uuid
 
-import thread
+from urllib2 import URLError
+from threading import Thread
+import uuid
 import suds
 import time
 import logging
 
+class CallBackThread(Thread):
+    def __init__(self, platform, core_session_id, core_ip, implementor, logger):
+        Thread.__init__(self)
+	self.platform = platform
+	self.core_session_id = core_session_id
+	self.core_ip = core_ip
+	self.implementor = implementor
+	self.logger = logger
+
+    def run(self):
+        """
+	This function will run inside a thread and will check the deployment status.
+	Once the deployment is finished, it will call the core with the endpoint.
+	Input: core_session_id, core_ip
+	Output: void
+	"""
+	try:
+           client = suds.client.Client('http://' + self.core_ip + ':8080/axis2/services/CoreServices?wsdl', cache=None)
+	except URLError as u:
+	   self.logger.debug("Unavailable CallBack Server...")
+	   return
+        
+	while (self.implementor.allocation_status(self.platform) == "BUILDING"):
+	   self.logger.debug('Waiting to reply for core_session_id %s to %s.', self.core_session_id, self.core_ip)
+	   time.sleep(15)
+	     
+	if self.implementor.allocation_status(self.platform) == "CREATED":
+	   client.service.deployCallback(self.core_session_id, self.platform.get_endpoint())
+	else:
+           client.service.deployCallback(self.core_session_id, "FAILED")
+	return    
 
 class InfrastructureAbstraction:
     def __init__ (self, implementor, profiles):
@@ -21,7 +53,7 @@ class InfrastructureAbstraction:
         self.sessions = Sessions()
 
 	# Configure Logging
-	logging.basicConfig(level=logging.DEBUG)
+	logging.basicConfig(level=logging.INFO)
 	self.logger = logging.getLogger(__name__)
 
 
@@ -79,27 +111,10 @@ class InfrastructureAbstraction:
            self.implementor.allocate_resources(platform, profile)
         except ResourcesNotAvailable as e:
            return 0
-        # thread.start_new_thread(self.callback_client, (core_session_id, self.remote_ip))
+        # Thread invocation
+	callback_thread = CallBackThread(platform, core_session_id, remote_ip, self.implementor, self.logger)
+	callback_thread.start()
         return core_session_id
-
-    def callback_client(platform, core_session_id, core_ip):
-        """
-	This function will run inside a thread and will check the deployment status.
-	Once the deployment is finished, it will call the core with the endpoint.
-	Input: core_session_id, core_ip
-	Output: void
-	"""
-        client = suds.client.Client('http://' + core_ip + ':8080/axis2/services/CoreServices?wsdl', cache=None)
-        
-	while (self.implementor.allocation_status(platform) == "BUILDING"):
-	   self.logger.debug('Waiting to reply for core_session_id %s to %s.', core_session_id, core_ip)
-	   time.sleep(15)
-	     
-	if self.implementor.allocation_status(platform) == "CREATED":
-	   client.service.deployCallback(core_session_id, platform.get_endpoint())
-	else:
-           client.service.deployCallback(core_session_id, "FAILED")
-	return    
 
     def get_available_platforms(self):
         """
@@ -115,7 +130,12 @@ class InfrastructureAbstraction:
         The platform status will be BUILDING, CREATED, DESTROYED, FAILED
         platform_id -- the id of the platform
         """
-        platform_id = uuid.UUID(platform_id)
+	_id = platform_id
+	try :
+	   platform_id = uuid.UUID(platform_id)
+	except ValueError as v:
+	   self.logger.debug("Platform ID is not UUID, created by callback...")
+	   platform_id = _id
         platform = self.sessions.get_platform(platform_id)
         return self.implementor.allocation_status(platform)
 
@@ -133,11 +153,18 @@ class InfrastructureAbstraction:
         Destroy the platform.
         platform_id -- the id of the platform
         """
-        platform_id = uuid.UUID(platform_id)
+	_id = platform_id
+	try :
+           platform_id = uuid.UUID(platform_id)
+        except ValueError as v:
+	   self.logger.debug("Platform ID is not UUID, created by callback...")
+	   platform_id = _id
+	   
         try :
            platform = self.sessions.get_platform(platform_id)
         except PlatformDoesNotExist as e:
            return 0
 
         deallocation_status = self.implementor.deallocate_resources(platform)
+	self.sessions.remove_platform(platform_id)
         return deallocation_status

@@ -35,7 +35,7 @@ class OpenStack(InfrastructureImplementor):
         }
  
         # Configure Logging
-	logging.basicConfig(level=logging.DEBUG)
+	logging.basicConfig(level=logging.INFO)
 	self.logger = logging.getLogger(__name__)
 
     def authenticate(self):
@@ -96,7 +96,10 @@ class OpenStack(InfrastructureImplementor):
         heat_status = status['stack']['stack_status']
         platform.set_status(self.results_status[heat_status])
 	# I have to update the endpoint too
-	self.logger.debug("%s", status)
+        if heat_status == "CREATE_COMPLETE":
+	   platform.set_endpoint(status['stack']['outputs'][0]['output_value'])
+
+	self.logger.debug("The STATUS data structure: %s", status)
         return platform.get_status()
 
     def deallocate_resources(self, platform):
