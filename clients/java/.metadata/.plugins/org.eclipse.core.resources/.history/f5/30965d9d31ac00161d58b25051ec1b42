@@ -1,7 +1,0 @@
-package callback_server;
-
-public class CoreCallBackImpl implements CoreCallBack {
-	public void deployCallback(int sessionID, String uri) {
-		System.out.println("Profile: " + sessionID + " Endpoint: " + uri);
-	}
-}

@@ -1,0 +1,20 @@
+package com.example.client;
+
+import org.apache.axis2.AxisFault;
+
+import com.example.TestServiceStub;
+import com.example.types.AddSimpleDocument;
+import com.example.types.AddTripleDocument;
+
+public class AddSimpleClient {
+
+	public static void main(String[] args) {
+		try {
+			TestServiceStub stub = new TestServiceStub("http://localhost:8000/api/wsdl");
+			AddTripleDocument request = AddTripleDocument.Factory.newInstance();
+		} catch (AxisFault e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

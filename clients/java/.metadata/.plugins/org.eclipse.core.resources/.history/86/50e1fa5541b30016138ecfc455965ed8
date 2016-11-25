@@ -1,0 +1,15 @@
+package com.example.client;
+
+import javax.xml.ws.WebServiceRef;
+
+import com.example.TestPortType;
+import com.example.TestService;
+
+public class AddSimpleClient {
+	@WebServiceRef(wsdlLocation = "http://localhost:8000/api/wsdl")
+	private static TestService service;
+	public static void main(String[] args) {
+		TestPortType port = service.getTestPort();
+		System.out.println(port.addTriple("1", "2", "3"));
+	}
+}

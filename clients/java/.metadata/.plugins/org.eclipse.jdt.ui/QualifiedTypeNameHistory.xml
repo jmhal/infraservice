@@ -4,4 +4,15 @@
 <fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndService"/>
 <fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndPortType"/>
 <fullyQualifiedTypeName name="javax.jws.WebService"/>
+<fullyQualifiedTypeName name="com.example.TestServiceStub"/>
+<fullyQualifiedTypeName name="com.example.types.AddSimpleDocument"/>
+<fullyQualifiedTypeName name="com.example.types.AddTripleDocument"/>
+<fullyQualifiedTypeName name="com.example.types.AddTripleDocument.AddTriple"/>
+<fullyQualifiedTypeName name="com.example.types.AddTripleResultDocument"/>
+<fullyQualifiedTypeName name="javax.xml.ws.WebServiceRef"/>
+<fullyQualifiedTypeName name="com.example.TestPortType"/>
+<fullyQualifiedTypeName name="com.example.TestService"/>
+<fullyQualifiedTypeName name="java.net.URL"/>
+<fullyQualifiedTypeName name="org.apache.axis2.context.ConfigurationContextFactory"/>
+<fullyQualifiedTypeName name="com.example.types.AddTripleDocument.Factory"/>
 </qualifiedTypeNameHistroy>

@@ -1,0 +1,27 @@
+package com.example.client;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.xml.ws.WebServiceRef;
+
+import com.example.Error;
+import com.example.TestPortType;
+import com.example.TestService;
+
+public class AddSimpleClient {
+	@WebServiceRef(wsdlLocation = "http://localhost:8000/api/wsdl")
+	private static TestService service;
+	public static void main(String[] args) {
+		try {
+			service = new TestService(new URL("http://localhost:8000/api/wsdl"));
+			TestPortType port = service.getTestPort();
+			System.out.println(port.addTriple("1", "2", "3"));
+		} catch (Error e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

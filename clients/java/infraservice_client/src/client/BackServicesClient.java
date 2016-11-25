@@ -27,27 +27,27 @@ public class BackServicesClient {
 				System.out.println(profilesIds.getProfileId() + ":" + profilesIds.getProfileName());
 			}
 			
-			System.out.println("Creating Profile: 0, Session ID: 104");
-			String profile0ID = port.deployContractCallback("0", "104");
-			
-			System.out.println("Creating Profile: 1, Session ID: 105");
-			String profile1ID = port.deployContractCallback("1", "105");
+			System.out.println("Creating Profile: 321, Session ID: 104");
+			String profile0ID = port.deployContractCallback("321", "104");
+			System.out.println("Session ID:" + profile0ID);
+			// System.out.println("Creating Profile: 1, Session ID: 105");
+			// String profile1ID = port.deployContractCallback("1", "105");
 			
 			String status0 = port.platformDeploymentStatus(profile0ID);
-			String status1 = port.platformDeploymentStatus(profile1ID);
-			while ( !status0.equals("CREATED") && !status1.equals("CREATED"))
+			// String status1 = port.platformDeploymentStatus(profile1ID);
+			while ( !status0.equals("CREATED") /* && !status1.equals("CREATED") */)
 			{
 				System.out.println("Status 0:" + status0);
-				System.out.println("Status 1:" + status1);
+				// System.out.println("Status 1:" + status1);
 				Thread.sleep(15000);
 				status0 = port.platformDeploymentStatus(profile0ID);
-				status1 = port.platformDeploymentStatus(profile1ID);
+				// status1 = port.platformDeploymentStatus(profile1ID);
 			}
 			
 			System.out.println("Destroying Profile: 0, Session ID: 104");
 			port.destroyPlatform(profile0ID);
-			System.out.println("Destroying Profile: 1, Session ID: 105");
-			port.destroyPlatform(profile1ID);
+			//System.out.println("Destroying Profile: 1, Session ID: 105");
+			//port.destroyPlatform(profile1ID);
 		} catch (MalformedURLException e) {
 
 			e.printStackTrace();
