@@ -1,0 +1,10 @@
+package br.ufc.mdcc.addsimple;
+
+import javax.jws.WebService;
+
+
+@WebService(endpointInterface = "br.ufc.mdcc.addsimple.AddSimple");
+
+public class AddSimpleImpl implements AddSimple {
+
+}

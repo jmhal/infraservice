@@ -1,0 +1,19 @@
+package br.ufc.mdcc.addsimple;
+
+import javax.jws.WebService;
+
+
+@WebService(endpointInterface = "br.ufc.mdcc.addsimple.AddSimple")
+
+public class AddSimpleImpl implements AddSimple {
+
+	@Override
+	public String add_simple(String a, String b) {
+		int A = Integer.parseInt(a);
+		int B = Integer.parseInt(b);
+		
+		int C = A + B;
+	
+	    return "" + C;			
+	}
+}

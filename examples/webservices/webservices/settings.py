@@ -25,8 +25,12 @@ SECRET_KEY = 'jw0890$%ty&fx%%uw&#s2oxk%@sesc5gxq-#s_nvnaybl$#!%#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+<<<<<<< HEAD
 gLLOWED_HOSTS = ['192.168.1.110', '192.168.1.111', 'localhost']
 
+=======
+ALLOWED_HOSTS = ['192.168.1.110', '192.168.1.111', 'localhost', '127.0.0.1']
+>>>>>>> 1e1ea883b2337bca150eed1705b8b36f2f730f4b
 
 
 # Application definition

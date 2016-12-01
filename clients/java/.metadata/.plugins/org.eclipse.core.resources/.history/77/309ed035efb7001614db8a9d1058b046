@@ -1,0 +1,17 @@
+package br.ufc.mdcc.hpcshelf.backend;
+
+public class BackEndServicesImpl implements BackEndServices {
+
+	@Override
+	public String deployContractCallback(String profileId, String coreSessionId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String destroyPlatform(String coreSessionId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
