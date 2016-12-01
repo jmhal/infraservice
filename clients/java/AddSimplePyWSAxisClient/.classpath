@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/home/jmhal/eclipse/stubs/build/lib/TestService-test-client.jar"/>
 	<classpathentry kind="lib" path="/home/jmhal/eclipse/stubs/build/lib/XBeans-packaged.jar"/>
 	<classpathentry kind="lib" path="/home/jmhal/eclipse/axis2-1.7.4/lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="/home/jmhal/eclipse/axis2-1.7.4/lib/antlr-2.7.7.jar"/>
@@ -81,5 +80,6 @@
 	<classpathentry kind="lib" path="/home/jmhal/eclipse/axis2-1.7.4/lib/endorsed/geronimo-jaxws_2.2_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="/home/jmhal/eclipse/axis2-1.7.4/lib/endorsed/geronimo-saaj_1.3_spec-1.0.1.jar"/>
 	<classpathentry kind="lib" path="/home/jmhal/eclipse/axis2-1.7.4/lib/endorsed/jaxb-api-2.2.6.jar"/>
+	<classpathentry kind="lib" path="/home/jmhal/eclipse/stubs/build/lib/AddSimpleImplService-test-client.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,0 +1,12 @@
+﻿<Properties StartupItem="AddSimpleWebService/AddSimpleWebService.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="monodevelop" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="AddSimpleWebService/AddSimple.asmx">
+    <Files>
+      <File FileName="AddSimpleWebService/AddSimple.asmx" Line="3" Column="18" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

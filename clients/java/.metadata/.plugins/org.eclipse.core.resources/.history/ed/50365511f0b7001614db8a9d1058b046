@@ -1,0 +1,22 @@
+package br.ufc.mdcc.hpcshelf.backend;
+
+import javax.jws.WebService;
+
+@WebService(endpointInterface = "br.ufc.mdcc.hpcshelf.backend.BackEndServices")
+
+
+public class BackEndServicesImpl implements BackEndServices {
+
+	@Override
+	public String deployContractCallback(String profileId, String coreSessionId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String destroyPlatform(String coreSessionId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
