@@ -71,7 +71,7 @@ platform from the profile_id and will assign core_session_id to identify it. The
 with a tuple (core_session_id, container_endpoint)
 Input: A string profile_id, a string core_session_id
 Output: An ID for the platform to be created. If it can't be created, the value will be 0.
-"""
+
 class Deploy_Contract_Callback(Function):
     def __init__(self, infra):
         self.infrastructure = infra
@@ -92,6 +92,11 @@ class Deploy_Contract_Callback(Function):
 	
 f = Deploy_Contract_Callback(infrastructure)
 server.add_function(f)
+"""
+@register
+def deploy_contract_callback(profile_id, core_session_id, remote_ip):
+    platform_id = self.infrastructure.create_platform_callback(profile_id, core_session_id, self.remote_ip)
+    return platform_id
 
 @register()
 def platform_deployment_status(platform_id):
