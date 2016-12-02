@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="java.net.MalformedURLException"/>
-<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndService"/>
-<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndPortType"/>
 <fullyQualifiedTypeName name="javax.jws.WebService"/>
 <fullyQualifiedTypeName name="com.example.TestServiceStub"/>
 <fullyQualifiedTypeName name="com.example.types.AddSimpleDocument"/>
@@ -26,4 +24,17 @@
 <fullyQualifiedTypeName name="javax.xml.ws.WebServiceContext"/>
 <fullyQualifiedTypeName name="com.sun.net.httpserver.HttpExchange"/>
 <fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndServicesImpl"/>
+<fullyQualifiedTypeName name="java.util.logging.Logger"/>
+<fullyQualifiedTypeName name="java.util.logging.Level"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndPortType"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndService"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendclient.BackEndServiceClient"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.pyws.Error_Exception"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.BackEndServicesImplServiceStub"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackDocument"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackDocument.Factory"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackDocument.DeployContractCallback"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackResponseDocument.DeployContractCallbackResponse"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackResponseDocument"/>
+<fullyQualifiedTypeName name="java.util.logging.ConsoleHandler"/>
 </qualifiedTypeNameHistroy>

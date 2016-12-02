@@ -1,9 +1,0 @@
-package com.example.client;
-
-public class AddSimpleClient {
-
-	public static void main(String[] args) {
-
-
-	}
-}

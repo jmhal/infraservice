@@ -1,5 +1,0 @@
-package br.ufc.mdcc.hpcshelf.backend;
-
-public interface BackEndServices {
-
-}
