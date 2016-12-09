@@ -1,5 +1,0 @@
-package br.ufc.mdcc.addsimple;
-
-public interface AddSimple {
-
-}
