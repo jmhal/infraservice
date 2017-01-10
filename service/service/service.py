@@ -16,7 +16,7 @@ from abstraction.infrastructurefactory import InfrastructureFactory
 server = SoapServer(
         service_name = 'BackEnd',
         tns = 'http://www.mdcc.ufc.br/hpcshelf/backend/',
-        location = 'http://' + env['LOCATION_IP'] + ':8000/backendservices/',
+        location = 'http://' + env['LOCATION_IP'] + ':8001/backendservices/',
 )
 
 # must protect access
@@ -25,7 +25,7 @@ profiles_file = env['PROFILES_FILE']
 infrastructure = InfrastructureFactory(profiles_file).get_infrastructure()
 
 # configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # This is necessary for the web service to be able to return a dictionary.
@@ -93,9 +93,10 @@ class Deploy_Contract_Callback(Function):
 f = Deploy_Contract_Callback(infrastructure)
 server.add_function(f)
 """
-@register
+@register()
 def deploy_contract_callback(profile_id, core_session_id, remote_ip):
-    platform_id = self.infrastructure.create_platform_callback(profile_id, core_session_id, self.remote_ip)
+    global infrastructure
+    platform_id = infrastructure.create_platform_callback(profile_id, core_session_id, remote_ip)
     return platform_id
 
 @register()
