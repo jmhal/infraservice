@@ -93,7 +93,7 @@ class Deploy_Contract_Callback(Function):
 f = Deploy_Contract_Callback(infrastructure)
 server.add_function(f)
 """
-@register
+@register()
 def deploy_contract_callback(profile_id, core_session_id, remote_ip):
     platform_id = self.infrastructure.create_platform_callback(profile_id, core_session_id, self.remote_ip)
     return platform_id

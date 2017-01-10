@@ -37,4 +37,8 @@
 <fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackResponseDocument.DeployContractCallbackResponse"/>
 <fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackResponseDocument"/>
 <fullyQualifiedTypeName name="java.util.logging.ConsoleHandler"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DestroyPlatformDocument"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DestroyPlatformDocument.Factory"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DestroyPlatformDocument.DestroyPlatform"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DestroyPlatformResponseDocument"/>
 </qualifiedTypeNameHistroy>
