@@ -27,7 +27,7 @@ class Platform:
     def get_status(self):
         return self.status
 
-    def set_endpoint(self):
+    def set_endpoint(self, endpoint):
         self.endpoint = endpoint
 
     def get_endpoint(self):

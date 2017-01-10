@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.net.MalformedURLException"/>
+<fullyQualifiedTypeName name="javax.jws.WebService"/>
+<fullyQualifiedTypeName name="com.example.TestServiceStub"/>
+<fullyQualifiedTypeName name="com.example.types.AddSimpleDocument"/>
+<fullyQualifiedTypeName name="com.example.types.AddTripleDocument"/>
+<fullyQualifiedTypeName name="com.example.types.AddTripleDocument.AddTriple"/>
+<fullyQualifiedTypeName name="com.example.types.AddTripleResultDocument"/>
+<fullyQualifiedTypeName name="javax.xml.ws.WebServiceRef"/>
+<fullyQualifiedTypeName name="com.example.TestPortType"/>
+<fullyQualifiedTypeName name="com.example.TestService"/>
+<fullyQualifiedTypeName name="java.net.URL"/>
+<fullyQualifiedTypeName name="org.apache.axis2.context.ConfigurationContextFactory"/>
+<fullyQualifiedTypeName name="com.example.types.AddTripleDocument.Factory"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.addsimple.AddSimpleServiceStub"/>
+<fullyQualifiedTypeName name="addsimple.mdcc.ufc.br.AddSimpleDocument.Factory"/>
+<fullyQualifiedTypeName name="addsimple.mdcc.ufc.br.AddSimpleDocument"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.addsimple.AddSimpleImpl"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.addsimple.impl.AddSimpleDocumentImpl"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.addsimple.AddSimpleDocument.Factory"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.addsimple.AddSimpleDocument"/>
+<fullyQualifiedTypeName name="javax.annotation.Resource"/>
+<fullyQualifiedTypeName name="javax.xml.ws.WebServiceContext"/>
+<fullyQualifiedTypeName name="com.sun.net.httpserver.HttpExchange"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndServicesImpl"/>
+<fullyQualifiedTypeName name="java.util.logging.Logger"/>
+<fullyQualifiedTypeName name="java.util.logging.Level"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndPortType"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backend.BackEndService"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendclient.BackEndServiceClient"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.pyws.Error_Exception"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.BackEndServicesImplServiceStub"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackDocument"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackDocument.Factory"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackDocument.DeployContractCallback"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackResponseDocument.DeployContractCallbackResponse"/>
+<fullyQualifiedTypeName name="br.ufc.mdcc.hpcshelf.backendservices.proxy.DeployContractCallbackResponseDocument"/>
+<fullyQualifiedTypeName name="java.util.logging.ConsoleHandler"/>
+</qualifiedTypeNameHistroy>

@@ -3,6 +3,7 @@ import requests
 import os
 import yaml
 import time
+import logging
 
 from os import environ as env
 from os import path as path
@@ -13,9 +14,7 @@ from common.platform import Platform
 
 class OpenStack(InfrastructureImplementor):
     def __init__(self, properties):
-        """
-        This will set the values to be used at each heat API call.
-        """
+        # This will set the values to be used at each heat API call.
         self.username = properties['username']
         self.password = properties['password']
         self.key = properties['key']
@@ -34,6 +33,10 @@ class OpenStack(InfrastructureImplementor):
            'DELETE_COMPLETE': "DESTROYED",
            'CREATE_FAILED': "FAILED"
         }
+ 
+        # Configure Logging
+	logging.basicConfig(level=logging.INFO)
+	self.logger = logging.getLogger(__name__)
 
     def authenticate(self):
         """
@@ -74,13 +77,6 @@ class OpenStack(InfrastructureImplementor):
 
         platform.set_allocation_id(stack_name + ":" + stack_id)
         platform.set_status("BUILDING")
-   
-        """
-        I think that here I'll have to start a thread to continuosly verify the allocation and
-        update the platform accordingly. This thread will be custom made for each implementor. 
-        Once the building is complete, this thread should invoke the Core with the platform id
-        and the endpoint.       
-        """
 
         return stack_name + ":" + stack_id
 
@@ -99,6 +95,11 @@ class OpenStack(InfrastructureImplementor):
                      stack_name = stack_name, stack_id = stack_id)
         heat_status = status['stack']['stack_status']
         platform.set_status(self.results_status[heat_status])
+	# I have to update the endpoint too
+        if heat_status == "CREATE_COMPLETE":
+	   platform.set_endpoint(status['stack']['outputs'][0]['output_value'])
+
+	self.logger.debug("The STATUS data structure: %s", status)
         return platform.get_status()
 
     def deallocate_resources(self, platform):
@@ -155,6 +156,7 @@ class OpenStack(InfrastructureImplementor):
         }
         r = requests.post(heat_base_url + "/" + tenant_id + "/stacks", data = json.dumps(fields), headers = headers)
         data = r.json()
+	self.logger.debug("CREATE STACK DATA: %s", data)
         return data['stack']['id']
 
     def status_stack(self, token, tenant_id, heat_base_url, stack_name, stack_id):

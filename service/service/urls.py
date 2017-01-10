@@ -19,5 +19,5 @@ from pyws.adapters._django import serve
 from service import server
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls), url('^backend/(.*)', serve, {'server': server}),
+    url(r'^admin/', admin.site.urls), url('^backendservices/(.*)', serve, {'server': server}),
 ]
