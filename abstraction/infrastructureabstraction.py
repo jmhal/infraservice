@@ -52,7 +52,7 @@ class InfrastructureAbstraction:
            return 0
         return platform_id
 
-   def create_platform_callback(self, profile_id, core_session_id):
+    def create_platform_callback(self, profile_id, core_session_id):
         """
         A platform is a container+infrastructure. This method should allocate
         the resources and deploy the container.
