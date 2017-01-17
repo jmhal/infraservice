@@ -124,7 +124,6 @@ class InfrastructureAbstraction:
         platforms_ids = self.sessions.get_platform_list();
         return dict( (id, self.sessions.get_platform(id).get_profile_id()) for id in platforms_ids if self.sessions.get_platform(id).get_status() != "DESTROYED" )
 
-
     def platform_status(self, platform_id):
         """
         The platform status will be BUILDING, CREATED, DESTROYED, FAILED
@@ -136,6 +135,9 @@ class InfrastructureAbstraction:
 	except ValueError as v:
 	   self.logger.debug("Platform ID is not UUID, created by callback...")
 	   platform_id = _id
+	except AttributeError as v:
+	   self.logger.debug("Platform ID already is UUID")
+	   platform_id = _id
         platform = self.sessions.get_platform(platform_id)
         return self.implementor.allocation_status(platform)
 
@@ -144,7 +146,12 @@ class InfrastructureAbstraction:
         Returns the endpoint.
         platform_id -- the id of the platform
         """
-        platform_id = uuid.UUID(platform_id)
+	_id = platform_id
+	try :
+           platform_id = uuid.UUID(platform_id)
+        except AttributeError as v:
+	   self.logger.debug("Platform ID already is UUID")
+	   platform_id = _id
         platform = self.sessions.get_platform(platform_id)
         return platform.get_endpoint()
 
@@ -159,12 +166,36 @@ class InfrastructureAbstraction:
         except ValueError as v:
 	   self.logger.debug("Platform ID is not UUID, created by callback...")
 	   platform_id = _id
-	   
+	except AttributeError as v:
+	   self.logger.debug("Platform ID already is UUID")
+	   platform_id = _id
+   
         try :
            platform = self.sessions.get_platform(platform_id)
         except PlatformDoesNotExist as e:
+           self.logger.info("Platform does not exist.")
            return 0
 
         deallocation_status = self.implementor.deallocate_resources(platform)
 	self.sessions.remove_platform(platform_id)
         return deallocation_status
+ 
+    def destroy_platform_by_endpoint(self, endpoint):
+        """
+	Destroy the platform with the corresponding endpoint.
+	Input: the endpoint
+	Output: the status of the deallocation
+	"""
+	self.logger.info("Destroying platform with endpoint: " + endpoint);
+        platform_id = None  
+        for id in self.sessions.get_platform_list():
+	    _endpoint = self.sessions.get_platform(id).get_endpoint()   
+	    if (endpoint == _endpoint):
+	        platform_id = id
+
+	if (platform_id == None):
+	    self.logger.info("Platform not found for endpoint: " + endpoint)
+	    return "NOTFOUND"
+	
+        return self.destroy_platform(platform_id)
+

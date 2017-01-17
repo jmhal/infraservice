@@ -119,7 +119,8 @@ def get_platform_endpoint(platform_id):
     Input: The ID of the platform.
     Output: A string with the endpoint or NULL if nonexistent platform.
     """
-    return platform_id
+    global infrastructure
+    return infrastructure.get_platform_endpoint(platform_id)
 
 # This is necessary for the web service to be able to return a dictionary.
 # It must know beforehand the type.
@@ -143,8 +144,37 @@ def destroy_platform(platform_id):
     Input: The ID of the platform.
     Output: SUCCESS or NULL if nonexistent platform.
     """
+    global infrastructure
     return infrastructure.destroy_platform(platform_id)
     
+# Synchronous methods
+@register()
+def deploy(profile_id):
+    """
+    This is for synchronous deployment.
+    Input: the ID of the profile.
+    Output: the endpoint of the platform.
+    """
+    global infrastructure
+    platform_id = infrastructure.create_platform(int(profile_id))
+    logger.info("Platform created with ID:" + str(platform_id))
+    while (infrastructure.platform_status(platform_id) == "BUILDING"):
+        time.sleep(2)
+    if (infrastructure.platform_status(platform_id) == "FAILED"):
+        return "FAILED"
+    else:
+        return "http://" + infrastructure.get_platform_endpoint(platform_id) + ":8081/Platform.asmx"
+
+@register() 
+def destroy(endpoint):
+    """
+    This is for synchronous destroy.
+    Input: the endpoint of the platform.
+    Output: None.
+    """
+    global infrastructure
+    return infrastructure.destroy_platform_by_endpoint(str(endpoint.split(':')[1][2:]))
+
 def extract(contract):
     return int(contract)
 

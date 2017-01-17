@@ -97,9 +97,10 @@ class OpenStack(InfrastructureImplementor):
         platform.set_status(self.results_status[heat_status])
 	# I have to update the endpoint too
         if heat_status == "CREATE_COMPLETE":
+	   self.logger.info("Endpoint: %s", status['stack']['outputs'][0]['output_value'])
 	   platform.set_endpoint(status['stack']['outputs'][0]['output_value'])
 
-	self.logger.debug("The STATUS data structure: %s", status)
+	# self.logger.info("The STATUS data structure: %s", status)
         return platform.get_status()
 
     def deallocate_resources(self, platform):
