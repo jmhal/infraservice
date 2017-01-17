@@ -1,0 +1,6 @@
+/home/joaoalencar/scratch/BackEndServicesClient/BackEndServicesClient/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/joaoalencar/scratch/BackEndServicesClient/BackEndServicesClient/bin/Debug/BackEndService.dll
+/home/joaoalencar/scratch/BackEndServicesClient/BackEndServicesClient/bin/Debug/BackEndServicesClient.exe.mdb
+/home/joaoalencar/scratch/BackEndServicesClient/BackEndServicesClient/bin/Debug/BackEndServicesClient.exe
+/home/joaoalencar/scratch/BackEndServicesClient/BackEndServicesClient/obj/x86/Debug/BackEndServicesClient.exe
+/home/joaoalencar/scratch/BackEndServicesClient/BackEndServicesClient/obj/x86/Debug/BackEndServicesClient.exe.mdb
