@@ -137,6 +137,19 @@ def available_platforms():
     platform_list = [ {'platform_id': c, 'profile_id': platforms_dict[c]} for c in platforms_dict ]
     return platform_list
 
+platforms_endpoint = {0: 'platforms_endpoint', 'platform_id': str, 'endpoint': str}
+@register(return_type=[platforms_endpoint])
+def available_platforms_endpoints():
+    """
+    Lists the platforms currently instantiated.
+    Input: there is no need for input.
+    Output: A list of platform id's.
+    """
+    global infrastructure
+    platforms_dict = infrastructure.get_available_platforms_endpoints()
+    platform_list = [ {'platform_id': c, 'endpoint': "http://" + platforms_dict[c] + ":8081/Platform.asmx" } for c in platforms_dict ]
+    return platform_list
+
 @register()
 def destroy_platform(platform_id):
     """

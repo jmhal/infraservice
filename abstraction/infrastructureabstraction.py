@@ -121,8 +121,16 @@ class InfrastructureAbstraction:
         Returns a dictionary of all instantiated platforms:
         (platform_id, profile_id)
         """
-        platforms_ids = self.sessions.get_platform_list();
+        platforms_ids = self.sessions.get_platform_list()
         return dict( (id, self.sessions.get_platform(id).get_profile_id()) for id in platforms_ids if self.sessions.get_platform(id).get_status() != "DESTROYED" )
+
+    def get_available_platforms_endpoints(self):
+        """
+	Returns a dictionary of all instantiated platforms endpoints:
+	(platform_id, endpoint)
+	"""
+        platforms_ids = self.sessions.get_platform_list()
+        return dict( (id, self.sessions.get_platform(id).get_endpoint()) for id in platforms_ids if self.sessions.get_platform(id).get_status() != "DESTROYED" )
 
     def platform_status(self, platform_id):
         """
