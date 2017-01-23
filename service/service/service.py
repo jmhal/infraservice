@@ -147,7 +147,7 @@ def available_platforms_endpoints():
     """
     global infrastructure
     platforms_dict = infrastructure.get_available_platforms_endpoints()
-    platform_list = [ {'platform_id': c, 'endpoint': "http://" + platforms_dict[c] + ":8081/Platform.asmx" } for c in platforms_dict ]
+    platform_list = [ {'platform_id': c, 'endpoint': "http://" + platforms_dict[c] + ":8081/PlatformServices.asmx" } for c in platforms_dict ]
     return platform_list
 
 @register()
