@@ -176,7 +176,7 @@ def main():
       'key': "joaoalencar",
       'username': "joaoalencar",
       'password': "XXXXX",
-      'auth_url': "http://200.19.177.89:5000/v2.0",
+      'auth_url': "http://XXX.XXX.XXX.XXX:5000/v2.0",
       'tenant_name': "hpcshelf",
       'region_name': "RegionOne"
    }
